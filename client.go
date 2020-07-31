@@ -3,16 +3,18 @@ package gbfs
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
-	"os"
 	"reflect"
 	"sync"
 	"time"
 )
 
 var (
-	ErrFeedNotFound = errors.New("feed not found")
+	ErrMissingAutodiscoveryURL = errors.New("missing auto discovery url")
+	ErrFeedNotFound            = errors.New("feed not found")
+	ErrFailedAutodiscoveryURL  = errors.New("failed to get auto discovery url")
+	ErrInvalidLanguage         = errors.New("invalid language")
+	ErrInvalidSubscribeHandler = errors.New("invalid subscribe handler")
 )
 
 type (
@@ -21,7 +23,6 @@ type (
 		httpClient *http.Client
 		cache      *ClientCache
 		Options    *ClientOptions
-		Logger     *log.Logger
 	}
 	// ClientOptions ...
 	ClientOptions struct {
@@ -29,7 +30,6 @@ type (
 		DefaultLanguage  string
 		UserAgent        string
 		HTTPClient       *http.Client
-		Logger           *log.Logger
 	}
 	// ClientCache ...
 	ClientCache struct {
@@ -41,14 +41,14 @@ type (
 	ClientSubscribeOptions struct {
 		Languages []string
 		FeedNames []string
-		Handler   func(c *Client, feed Feed)
+		Handler   func(*Client, Feed, error)
 	}
 )
 
 // NewClient ...
 func NewClient(options *ClientOptions) (*Client, error) {
 	if options.AutoDiscoveryURL == "" {
-		return nil, errors.New("missing auto discovery url")
+		return nil, ErrMissingAutodiscoveryURL
 	}
 	c := &Client{
 		httpClient: options.HTTPClient,
@@ -56,10 +56,6 @@ func NewClient(options *ClientOptions) (*Client, error) {
 			feeds: make(map[string]Feed),
 		},
 		Options: options,
-		Logger:  options.Logger,
-	}
-	if c.Logger == nil {
-		c.Logger = log.New(os.Stdout, "client", 0)
 	}
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{
@@ -147,7 +143,7 @@ func (c *Client) Get(feed Feed) error {
 		g := &FeedGbfs{}
 		err = c.Get(g)
 		if err != nil {
-			return errors.New("failed to get gbfs feed")
+			return ErrFailedAutodiscoveryURL
 		}
 	}
 	language := feed.GetLanguage()
@@ -160,7 +156,7 @@ func (c *Client) Get(feed Feed) error {
 		if !ok {
 			l, ok = c.cache.feedGbfs.Data[c.Options.DefaultLanguage]
 			if !ok {
-				return errors.New("invalid language")
+				return ErrInvalidLanguage
 			}
 		}
 		for _, f := range l.Feeds {
@@ -194,15 +190,15 @@ func cloneValue(src, dst interface{}) {
 // Subscribe ...
 func (c *Client) Subscribe(options *ClientSubscribeOptions) error {
 	if options.Handler == nil {
-		return errors.New("invalid subscribe handler")
+		return ErrInvalidSubscribeHandler
 	}
-	channel := make(chan Feed)
+	channel := make(chan interface{})
 	go (func() {
 		loops := []Feed{}
 		g := &FeedGbfs{}
 		err := c.Get(g)
 		if err != nil {
-			c.Logger.Printf("%s", err)
+			channel <- errors.New(g.Name() + ": " + err.Error())
 			return
 		}
 		channel <- g
@@ -230,13 +226,13 @@ func (c *Client) Subscribe(options *ClientSubscribeOptions) error {
 				f.SetLanguage(language)
 				err = c.Get(f)
 				if err != nil {
-					c.Logger.Printf("feed=%s %s", feed.Name, err)
 					f.SetTTL(g.GetTTL())
+					loops = append(loops, f)
+					channel <- errors.New(feed.Name + ": " + err.Error())
+					continue
 				}
 				loops = append(loops, f)
-				if err == nil {
-					channel <- f
-				}
+				channel <- f
 			}
 		}
 		for _, loop := range loops {
@@ -247,7 +243,7 @@ func (c *Client) Subscribe(options *ClientSubscribeOptions) error {
 					f.SetLanguage(loop.GetLanguage())
 					err = c.Get(f)
 					if err != nil {
-						c.Logger.Printf("feed=%s %s", loop.Name(), err)
+						channel <- errors.New(loop.Name() + ": " + err.Error())
 						continue
 					}
 					if loop.GetTTL() == 0 {
@@ -262,11 +258,18 @@ func (c *Client) Subscribe(options *ClientSubscribeOptions) error {
 		}
 	})()
 	for {
-		feed, ok := <-channel
-		if ok {
-			options.Handler(c, feed)
-		} else {
-			c.Logger.Printf("channel error")
+		msg, ok := <-channel
+		if !ok {
+			options.Handler(c, nil, errors.New("channel: error"))
+			continue
+		}
+		switch v := msg.(type) {
+		case Feed:
+			options.Handler(c, v, nil)
+		case error:
+			options.Handler(c, nil, v)
+		default:
+			options.Handler(c, nil, errors.New("channel: unknown type"))
 		}
 	}
 	return nil

@@ -10,7 +10,6 @@ Go implementation of client and server for GBFS (General Bikeshare Feed Specific
 c, err := gbfs.NewClient(&gbfs.ClientOptions{
     AutoDiscoveryURL: "http://127.0.0.1:8080/v3/system_id/gbfs.json",
     DefaultLanguage:  "en",
-    Logger:           log.New(os.Stdout, "", 3),
 })
 if err != nil {
     log.Fatal(err)
@@ -37,9 +36,13 @@ Client provides built-in function to handle feed updates.
 ```go
 err := c.Subscribe(&gbfs.ClientSubscribeOptions{
     Languages: []string{"en"},
-    Handler: func(c *gbfs.Client, f gbfs.Feed) {
+    Handler: func(c *gbfs.Client, f gbfs.Feed, err error) {
+        if err != nil {
+            log.Println(err)
+            return
+        }
         j, _ := json.Marshal(f)
-        c.Logger.Printf("feed=%s data=%s", f.Name(), j)
+        log.Printf("feed=%s data=%s", f.Name(), j)
     },
 })
 if err != nil {

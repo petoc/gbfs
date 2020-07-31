@@ -484,16 +484,19 @@ func main() {
 	c, err := gbfs.NewClient(&gbfs.ClientOptions{
 		AutoDiscoveryURL: "http://127.0.0.1:8080/v3/" + systemID + "/gbfs.json",
 		DefaultLanguage:  "en",
-		Logger:           log.New(os.Stdout, "", 3),
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
 	err = c.Subscribe(&gbfs.ClientSubscribeOptions{
 		// Languages: []string{"en"},
-		Handler: func(c *gbfs.Client, feed gbfs.Feed) {
+		Handler: func(c *gbfs.Client, feed gbfs.Feed, err error) {
+			if err != nil {
+				log.Println(err)
+				return
+			}
 			j, _ := json.Marshal(feed)
-			c.Logger.Printf("feed=%s language=%s data=%s", feed.Name(), feed.GetLanguage(), j)
+			log.Printf("feed=%s language=%s data=%s", feed.Name(), feed.GetLanguage(), j)
 		},
 	})
 	if err != nil {

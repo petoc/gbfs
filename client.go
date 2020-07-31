@@ -206,17 +206,8 @@ func (c *Client) Subscribe(options *ClientSubscribeOptions) error {
 			loops = append(loops, g)
 		}
 		for language, languageData := range g.Data {
-			if options.Languages != nil {
-				match := false
-				for _, languageSub := range options.Languages {
-					if language == languageSub {
-						match = true
-						break
-					}
-				}
-				if !match {
-					continue
-				}
+			if options.Languages != nil && indexOfStr(language, options.Languages) == -1 {
+				continue
 			}
 			for _, feed := range languageData.Feeds {
 				if options.FeedNames != nil && indexOfStr(feed.Name, options.FeedNames) == -1 {

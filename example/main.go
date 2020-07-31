@@ -490,6 +490,7 @@ func main() {
 	}
 	err = c.Subscribe(&gbfs.ClientSubscribeOptions{
 		// Languages: []string{"en"},
+		// FeedNames: []string{gbfs.FeedNameStationInformation, gbfs.FeedNameFreeBikeStatus},
 		Handler: func(c *gbfs.Client, feed gbfs.Feed, err error) {
 			if err != nil {
 				log.Println(err)

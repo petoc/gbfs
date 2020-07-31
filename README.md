@@ -35,7 +35,8 @@ Client provides built-in function to handle feed updates.
 
 ```go
 err := c.Subscribe(&gbfs.ClientSubscribeOptions{
-    Languages: []string{"en"},
+    // Languages: []string{"en"},
+    // FeedNames: []string{gbfs.FeedNameStationInformation, gbfs.FeedNameFreeBikeStatus},
     Handler: func(c *gbfs.Client, f gbfs.Feed, err error) {
         if err != nil {
             log.Println(err)
@@ -49,6 +50,8 @@ if err != nil {
     log.Println(err)
 }
 ```
+
+Subscription options `Languages` and `FeedNames` restrict subscription only to selected languages and feeds.
 
 ### Server
 

@@ -258,11 +258,7 @@ func (c *Client) Subscribe(options *ClientSubscribeOptions) error {
 		}
 	})()
 	for {
-		msg, ok := <-channel
-		if !ok {
-			options.Handler(c, nil, errors.New("channel: error"))
-			continue
-		}
+		msg := <-channel
 		switch v := msg.(type) {
 		case Feed:
 			options.Handler(c, v, nil)

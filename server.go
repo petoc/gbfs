@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -27,37 +26,34 @@ type (
 	// Server ...
 	Server struct {
 		Options *ServerOptions
-		Logger  *log.Logger
 	}
 	// ServerOptions ...
 	ServerOptions struct {
-		SystemID     string
-		RootDir      string
-		BaseURL      string
-		BasePath     string
-		Version      string
-		DefaultTTL   int
-		FeedHandlers []*FeedHandler
-		Logger       *log.Logger
+		SystemID      string
+		RootDir       string
+		BaseURL       string
+		BasePath      string
+		Version       string
+		DefaultTTL    int
+		FeedHandlers  []*FeedHandler
+		UpdateHandler func(server *Server, feed Feed, path string, err error)
 	}
 	// FeedHandler ...
 	FeedHandler struct {
 		Language string
 		TTL      int
 		Path     string
-		Handler  func(s *Server) ([]Feed, error)
+		Handler  func(*Server) ([]Feed, error)
 	}
 	// FileServer ...
 	FileServer struct {
 		httpServer *http.Server
 		Options    *FileServerOptions
-		Logger     *log.Logger
 	}
 	// FileServerOptions ...
 	FileServerOptions struct {
 		Addr    string
 		RootDir string
-		Logger  *log.Logger
 	}
 )
 
@@ -74,8 +70,7 @@ func writeFeed(filePath string, feed Feed) error {
 			return err
 		}
 	}
-	ioutil.WriteFile(filePath, b, 0644)
-	return nil
+	return ioutil.WriteFile(filePath, b, 0644)
 }
 
 // NewServer ...
@@ -94,10 +89,6 @@ func NewServer(options *ServerOptions) (*Server, error) {
 	}
 	s := &Server{
 		Options: options,
-		Logger:  options.Logger,
-	}
-	if s.Logger == nil {
-		s.Logger = log.New(os.Stdout, "", 0)
 	}
 	return s, nil
 }
@@ -121,7 +112,7 @@ func (s *Server) Start() error {
 			for {
 				feeds, err := feedHandler.Handler(s)
 				if err != nil {
-					s.Logger.Println(err)
+					s.Options.UpdateHandler(s, nil, "", err)
 					if !gbfsGenerated {
 						wgGbfsFeed.Done()
 					}
@@ -147,11 +138,10 @@ func (s *Server) Start() error {
 					pathSegments = append(pathSegments, path)
 					filePath := strings.Join(append([]string{s.Options.RootDir}, pathSegments...), "/")
 					err := writeFeed(filePath, feed)
+					s.Options.UpdateHandler(s, feed, strings.Join(pathSegments, "/"), err)
 					if err != nil {
-						s.Logger.Println(err)
 						continue
 					}
-					s.Logger.Printf("system=%s ttl=%d updated=%s", s.Options.SystemID, feed.GetTTL(), "/"+strings.Join(pathSegments, "/"))
 					if !gbfsGenerated && feed.Name() != FeedNameGbfs {
 						if gbfsFeed.Data == nil {
 							gbfsFeed.Data = make(map[string]*FeedGbfsLanguage)
@@ -202,11 +192,7 @@ func (s *Server) Start() error {
 			pathSegments = append(pathSegments, string(gbfsFeed.Name())+".json")
 			filePath := strings.Join(append([]string{s.Options.RootDir}, pathSegments...), "/")
 			err := writeFeed(filePath, gbfsFeed)
-			if err != nil {
-				s.Logger.Println(err)
-				continue
-			}
-			s.Logger.Printf("system=%s ttl=%d updated=%s", s.Options.SystemID, gbfsFeed.GetTTL(), "/"+strings.Join(pathSegments, "/"))
+			s.Options.UpdateHandler(s, gbfsFeed, strings.Join(pathSegments, "/"), err)
 			if gbfsFeed.TTL == 0 {
 				break
 			}
@@ -237,10 +223,6 @@ func NewFileServer(options *FileServerOptions) (*FileServer, error) {
 	}
 	s := &FileServer{
 		Options: options,
-		Logger:  options.Logger,
-	}
-	if s.Logger == nil {
-		s.Logger = log.New(os.Stdout, "", 0)
 	}
 	if s.httpServer == nil {
 		s.httpServer = &http.Server{
@@ -255,6 +237,5 @@ func NewFileServer(options *FileServerOptions) (*FileServer, error) {
 
 // ListenAndServe ...
 func (s *FileServer) ListenAndServe() error {
-	s.Logger.Printf("listening=%s", s.Options.Addr)
 	return s.httpServer.ListenAndServe()
 }

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"log"
-	"os"
 	"time"
 
 	"github.com/petoc/gbfs"
@@ -455,7 +454,13 @@ func main() {
 		Version:      gbfs.V30,
 		DefaultTTL:   60,
 		FeedHandlers: getFeedHandlers(nil),
-		Logger:       log.New(os.Stdout, "", 3),
+		UpdateHandler: func(s *gbfs.Server, feed gbfs.Feed, path string, err error) {
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			log.Printf("system=%s ttl=%d updated=%s", s.Options.SystemID, feed.GetTTL(), path)
+		},
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -472,7 +477,6 @@ func main() {
 		fs, err := gbfs.NewFileServer(&gbfs.FileServerOptions{
 			Addr:    "127.0.0.1:8080",
 			RootDir: "public",
-			Logger:  log.New(os.Stdout, "", 3),
 		})
 		if err != nil {
 			log.Fatal(err)

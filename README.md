@@ -66,7 +66,13 @@ s, err := gbfs.NewServer(&gbfs.ServerOptions{
     FeedHandlers: []*gbfs.FeedHandler{
         // see example for how to add feed handlers
     },
-    Logger:       log.New(os.Stdout, "", 3),
+    UpdateHandler: func(s *gbfs.Server, feed gbfs.Feed, path string, err error) {
+        if err != nil {
+            log.Println(err)
+            return
+        }
+        log.Printf("system=%s ttl=%d updated=%s", s.Options.SystemID, feed.GetTTL(), path)
+    },
 })
 if err != nil {
     log.Fatal(err)
@@ -81,13 +87,12 @@ Main autodiscovery feed `gbfs.json` will be constructed from all available feeds
 
 #### Serving feeds
 
-Server will regularly update feeds. They can be served as static files with standard webservers (Nginx, Apache, ...) or with simple built-in static file server.
+Feeds can be served as static files with standard webservers (Nginx, Apache, ...) or with simple built-in static file server.
 
 ```go
 fs, err := gbfs.NewFileServer(&gbfs.FileServerOptions{
     Addr:    "127.0.0.1:8080",
     RootDir: "public",
-    Logger:  log.New(os.Stdout, "", 3),
 })
 if err != nil {
     log.Fatal(err)

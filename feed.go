@@ -1,7 +1,6 @@
 package gbfs
 
 import (
-	"sort"
 	"strings"
 	"time"
 )
@@ -216,11 +215,10 @@ func FeedNameAll() []string {
 
 // FeedNameValid ...
 func FeedNameValid(name string) bool {
-	haystack := FeedNameAll()
-	sort.Strings(haystack)
-	i := sort.SearchStrings(haystack, name)
-	if i < len(haystack) && haystack[i] == name {
-		return true
+	for _, n := range FeedNameAll() {
+		if name == n {
+			return true
+		}
 	}
 	return false
 }

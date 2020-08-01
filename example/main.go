@@ -446,7 +446,7 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 
 func main() {
 	systemID := "system_id"
-	s, err := gbfs.NewServer(&gbfs.ServerOptions{
+	s, err := gbfs.NewServer(gbfs.ServerOptions{
 		SystemID:     systemID,
 		RootDir:      "public",
 		BaseURL:      "http://127.0.0.1:8080",
@@ -474,7 +474,7 @@ func main() {
 		log.Fatal(err)
 	}
 	go (func() {
-		fs, err := gbfs.NewFileServer(&gbfs.FileServerOptions{
+		fs, err := gbfs.NewFileServer(gbfs.FileServerOptions{
 			Addr:    "127.0.0.1:8080",
 			RootDir: "public",
 		})
@@ -485,14 +485,14 @@ func main() {
 	})()
 	// delay to start server
 	time.Sleep(100 * time.Millisecond)
-	c, err := gbfs.NewClient(&gbfs.ClientOptions{
+	c, err := gbfs.NewClient(gbfs.ClientOptions{
 		AutoDiscoveryURL: "http://127.0.0.1:8080/v3/" + systemID + "/gbfs.json",
 		DefaultLanguage:  "en",
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = c.Subscribe(&gbfs.ClientSubscribeOptions{
+	err = c.Subscribe(gbfs.ClientSubscribeOptions{
 		// Languages: []string{"en"},
 		// FeedNames: []string{gbfs.FeedNameStationInformation, gbfs.FeedNameFreeBikeStatus},
 		Handler: func(c *gbfs.Client, feed gbfs.Feed, err error) {

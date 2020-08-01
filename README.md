@@ -7,7 +7,7 @@ Go implementation of client and server for GBFS (General Bikeshare Feed Specific
 ### Client
 
 ```go
-c, err := gbfs.NewClient(&gbfs.ClientOptions{
+c, err := gbfs.NewClient(gbfs.ClientOptions{
     AutoDiscoveryURL: "http://127.0.0.1:8080/v3/system_id/gbfs.json",
     DefaultLanguage:  "en",
 })
@@ -34,7 +34,7 @@ if f.Data != nil {
 Client provides built-in function to handle feed updates.
 
 ```go
-err := c.Subscribe(&gbfs.ClientSubscribeOptions{
+err := c.Subscribe(gbfs.ClientSubscribeOptions{
     // Languages: []string{"en"},
     // FeedNames: []string{gbfs.FeedNameStationInformation, gbfs.FeedNameFreeBikeStatus},
     Handler: func(c *gbfs.Client, f gbfs.Feed, err error) {
@@ -56,7 +56,7 @@ Subscription options `Languages` and `FeedNames` restrict subscription only to s
 ### Server
 
 ```go
-s, err := gbfs.NewServer(&gbfs.ServerOptions{
+s, err := gbfs.NewServer(gbfs.ServerOptions{
     SystemID:     systemID,
     RootDir:      "public",
     BaseURL:      "http://127.0.0.1:8080",
@@ -90,7 +90,7 @@ Main autodiscovery feed `gbfs.json` will be constructed from all available feeds
 Feeds can be served as static files with standard webservers (Nginx, Apache, ...) or with simple built-in static file server.
 
 ```go
-fs, err := gbfs.NewFileServer(&gbfs.FileServerOptions{
+fs, err := gbfs.NewFileServer(gbfs.FileServerOptions{
     Addr:    "127.0.0.1:8080",
     RootDir: "public",
 })

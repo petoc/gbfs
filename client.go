@@ -46,7 +46,7 @@ type (
 )
 
 // NewClient ...
-func NewClient(options *ClientOptions) (*Client, error) {
+func NewClient(options ClientOptions) (*Client, error) {
 	if options.AutoDiscoveryURL == "" {
 		return nil, ErrMissingAutodiscoveryURL
 	}
@@ -55,7 +55,7 @@ func NewClient(options *ClientOptions) (*Client, error) {
 		cache: &ClientCache{
 			feeds: make(map[string]Feed),
 		},
-		Options: options,
+		Options: &options,
 	}
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{
@@ -188,7 +188,7 @@ func cloneValue(src, dst interface{}) {
 }
 
 // Subscribe ...
-func (c *Client) Subscribe(options *ClientSubscribeOptions) error {
+func (c *Client) Subscribe(options ClientSubscribeOptions) error {
 	if options.Handler == nil {
 		return ErrInvalidSubscribeHandler
 	}

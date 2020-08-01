@@ -74,7 +74,7 @@ func writeFeed(filePath string, feed Feed) error {
 }
 
 // NewServer ...
-func NewServer(options *ServerOptions) (*Server, error) {
+func NewServer(options ServerOptions) (*Server, error) {
 	if options.SystemID == "" {
 		return nil, ErrMissingSystemID
 	}
@@ -88,7 +88,7 @@ func NewServer(options *ServerOptions) (*Server, error) {
 		return nil, ErrInvalidDefaultTTL
 	}
 	s := &Server{
-		Options: options,
+		Options: &options,
 	}
 	return s, nil
 }
@@ -214,7 +214,7 @@ func (s *Server) StartAndWait() error {
 }
 
 // NewFileServer ...
-func NewFileServer(options *FileServerOptions) (*FileServer, error) {
+func NewFileServer(options FileServerOptions) (*FileServer, error) {
 	if options.Addr == "" {
 		return nil, ErrMissingServerAddress
 	}
@@ -222,7 +222,7 @@ func NewFileServer(options *FileServerOptions) (*FileServer, error) {
 		return nil, ErrMissingRootDir
 	}
 	s := &FileServer{
-		Options: options,
+		Options: &options,
 	}
 	if s.httpServer == nil {
 		s.httpServer = &http.Server{

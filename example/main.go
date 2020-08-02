@@ -22,7 +22,7 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 						Operator:    "Bike Sharing, Street 123, 12345 City",
 						URL:         "http://localhost/bikesharing/sk",
 						PhoneNumber: "00421987654321",
-						Email:       "bikesharing@localhost",
+						Email:       "bikesharing@example.com",
 						Timezone:    "Europe/Bratislava",
 					},
 				}
@@ -36,7 +36,7 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 						Operator:    "Bike Sharing, Street 123, 12345 City",
 						URL:         "http://localhost/bikesharing/en",
 						PhoneNumber: "00421987654321",
-						Email:       "bikesharing@localhost",
+						Email:       "bikesharing@example.com",
 						Timezone:    "Europe/Bratislava",
 					},
 				}

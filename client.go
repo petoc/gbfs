@@ -214,6 +214,9 @@ func (c *Client) Subscribe(options ClientSubscribeOptions) error {
 					continue
 				}
 				f := FeedStruct(feed.Name)
+				if f == nil {
+					continue
+				}
 				f.SetLanguage(language)
 				err = c.Get(f)
 				if err != nil {

@@ -25,6 +25,8 @@ type (
 		SetTTL(int) Feed
 		GetVersion() string
 		SetVersion(string) Feed
+		GetData() interface{}
+		SetData(interface{}) Feed
 		Expired() bool
 	}
 	// FeedCommon ...
@@ -32,7 +34,7 @@ type (
 		Language    string      `json:"-"` // Unofficial helper parameter
 		LastUpdated Timestamp   `json:"last_updated"`
 		TTL         int         `json:"ttl"`
-		Version     string      `json:"version"` // (v1.1)
+		Version     string      `json:"version,omitempty"` // (v1.1)
 		Data        interface{} `json:"data"`
 	}
 	// RentalURIs ...
@@ -318,6 +320,17 @@ func (s FeedCommon) GetVersion() string {
 // SetVersion ...
 func (s *FeedCommon) SetVersion(v string) Feed {
 	s.Version = v
+	return s
+}
+
+// GetData ...
+func (s FeedCommon) GetData() interface{} {
+	return s.Data
+}
+
+// SetData ...
+func (s *FeedCommon) SetData(v interface{}) Feed {
+	s.Data = v
 	return s
 }
 

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 	"reflect"
-	"sync"
 	"time"
 )
 
@@ -21,7 +20,7 @@ type (
 	// Client ...
 	Client struct {
 		httpClient *http.Client
-		cache      *ClientCache
+		cache      Cache
 		Options    *ClientOptions
 	}
 	// ClientOptions ...
@@ -30,12 +29,7 @@ type (
 		DefaultLanguage  string
 		UserAgent        string
 		HTTPClient       *http.Client
-	}
-	// ClientCache ...
-	ClientCache struct {
-		sync.RWMutex
-		feedGbfs *FeedGbfs
-		feeds    map[string]Feed
+		Cache            Cache
 	}
 	// ClientSubscribeOptions ...
 	ClientSubscribeOptions struct {
@@ -52,36 +46,29 @@ func NewClient(options ClientOptions) (*Client, error) {
 	}
 	c := &Client{
 		httpClient: options.HTTPClient,
-		cache: &ClientCache{
-			feeds: make(map[string]Feed),
-		},
-		Options: &options,
+		cache:      options.Cache,
+		Options:    &options,
 	}
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{
 			Timeout: 5 * time.Second,
 		}
 	}
+	if c.cache == nil {
+		c.cache = NewInMemoryCache()
+	}
 	return c, nil
 }
 
 func cacheGet(c *Client, feed Feed) (Feed, error) {
 	if c.cache != nil {
-		if feed.Name() == FeedNameGbfs {
-			if c.cache.feedGbfs != nil && !c.cache.feedGbfs.Expired() {
-				return c.cache.feedGbfs, nil
-			}
-		} else {
-			cacheKey := string(feed.Name())
-			if feed.GetLanguage() != "" {
-				cacheKey = cacheKey + ":" + feed.GetLanguage()
-			}
-			c.cache.RLock()
-			feedCached, ok := c.cache.feeds[cacheKey]
-			c.cache.RUnlock()
-			if ok && !feedCached.Expired() {
-				return feedCached, nil
-			}
+		cacheKey := string(feed.Name())
+		if feed.GetLanguage() != "" && feed.Name() != FeedNameGbfs {
+			cacheKey = cacheKey + ":" + feed.GetLanguage()
+		}
+		feedCached, ok := c.cache.Get(cacheKey)
+		if ok && !feedCached.Expired() {
+			return feedCached, nil
 		}
 	}
 	return nil, nil
@@ -89,17 +76,11 @@ func cacheGet(c *Client, feed Feed) (Feed, error) {
 
 func cacheSet(c *Client, feed Feed) {
 	if c.cache != nil {
-		if feed.Name() == FeedNameGbfs {
-			c.cache.feedGbfs, _ = feed.(*FeedGbfs)
-		} else {
-			cacheKey := string(feed.Name())
-			if feed.GetLanguage() != "" {
-				cacheKey = cacheKey + ":" + feed.GetLanguage()
-			}
-			c.cache.Lock()
-			c.cache.feeds[cacheKey] = feed
-			c.cache.Unlock()
+		cacheKey := string(feed.Name())
+		if feed.GetLanguage() != "" && feed.Name() != FeedNameGbfs {
+			cacheKey = cacheKey + ":" + feed.GetLanguage()
 		}
+		c.cache.Set(cacheKey, feed)
 	}
 }
 
@@ -139,9 +120,14 @@ func (c *Client) Get(feed Feed) error {
 		cloneValue(cached, feed)
 		return nil
 	}
-	if c.cache.feedGbfs == nil && feed.Name() != FeedNameGbfs {
-		g := &FeedGbfs{}
-		err = c.Get(g)
+	var gbfsFeed *FeedGbfs
+	tmp, ok := c.cache.Get(FeedNameGbfs)
+	if ok {
+		gbfsFeed = tmp.(*FeedGbfs)
+	}
+	if !ok && feed.Name() != FeedNameGbfs {
+		gbfsFeed = &FeedGbfs{}
+		err = c.Get(gbfsFeed)
 		if err != nil {
 			return ErrFailedAutodiscoveryURL
 		}
@@ -150,11 +136,11 @@ func (c *Client) Get(feed Feed) error {
 	if language == "" {
 		language = c.Options.DefaultLanguage
 	}
-	url := c.Options.AutoDiscoveryURL
+	var url string
 	if feed.Name() != FeedNameGbfs {
-		l, ok := c.cache.feedGbfs.Data[language]
+		l, ok := gbfsFeed.Data[language]
 		if !ok {
-			l, ok = c.cache.feedGbfs.Data[c.Options.DefaultLanguage]
+			l, ok = gbfsFeed.Data[c.Options.DefaultLanguage]
 			if !ok {
 				return ErrInvalidLanguage
 			}
@@ -165,6 +151,8 @@ func (c *Client) Get(feed Feed) error {
 				break
 			}
 		}
+	} else {
+		url = c.Options.AutoDiscoveryURL
 	}
 	err = c.GetURL(url, feed)
 	if err != nil {

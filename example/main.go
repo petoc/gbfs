@@ -49,14 +49,14 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 			Handler: func(s *gbfs.Server) ([]gbfs.Feed, error) {
 				feedSK := &gbfs.FeedVehicleTypes{
 					Data: &gbfs.FeedVehicleTypesData{
-						VehicleTypes: []*gbfs.FeedVehicleTypesType{
-							&gbfs.FeedVehicleTypesType{
+						VehicleTypes: []*gbfs.FeedVehicleTypesVehicleType{
+							&gbfs.FeedVehicleTypesVehicleType{
 								VehicleTypeID:  "vehicleType1",
 								FormFactor:     gbfs.FormFactorBicycle,
 								PropulsionType: gbfs.PropulsionTypeHuman,
 								Name:           "Bicykel",
 							},
-							&gbfs.FeedVehicleTypesType{
+							&gbfs.FeedVehicleTypesVehicleType{
 								VehicleTypeID:  "vehicleType2",
 								FormFactor:     gbfs.FormFactorMoped,
 								PropulsionType: gbfs.PropulsionTypeElectric,
@@ -68,14 +68,14 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 				feedSK.Language = "sk"
 				feedEN := &gbfs.FeedVehicleTypes{
 					Data: &gbfs.FeedVehicleTypesData{
-						VehicleTypes: []*gbfs.FeedVehicleTypesType{
-							&gbfs.FeedVehicleTypesType{
+						VehicleTypes: []*gbfs.FeedVehicleTypesVehicleType{
+							&gbfs.FeedVehicleTypesVehicleType{
 								VehicleTypeID:  "vehicleType1",
 								FormFactor:     gbfs.FormFactorBicycle,
 								PropulsionType: gbfs.PropulsionTypeHuman,
 								Name:           "Bicycle",
 							},
-							&gbfs.FeedVehicleTypesType{
+							&gbfs.FeedVehicleTypesVehicleType{
 								VehicleTypeID:  "vehicleType2",
 								FormFactor:     gbfs.FormFactorMoped,
 								PropulsionType: gbfs.PropulsionTypeElectric,
@@ -90,29 +90,30 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 		},
 		&gbfs.FeedHandler{
 			Handler: func(s *gbfs.Server) ([]gbfs.Feed, error) {
+				stationArea := gbfs.NewGeoJSONGeometryMultiPolygon(
+					[][][][]float64{
+						[][][]float64{
+							[][]float64{
+								[]float64{16.8331891, 47.7314286},
+								[]float64{22.56571, 47.7314286},
+								[]float64{22.56571, 49.6138162},
+								[]float64{16.8331891, 49.6138162},
+								[]float64{16.8331891, 47.7314286},
+							},
+						},
+					},
+					nil,
+				)
 				feedSK := &gbfs.FeedStationInformation{
 					Data: &gbfs.FeedStationInformationData{
 						Stations: []*gbfs.FeedStationInformationStation{
 							&gbfs.FeedStationInformationStation{
-								StationID: "station1",
-								Name:      "Stanica",
-								Lat:       48.1234,
-								Lon:       21.1234,
-								Address:   "Ulica 123",
-								StationArea: gbfs.NewGeoJSONGeometryMultiPolygon(
-									[][][][]float64{
-										[][][]float64{
-											[][]float64{
-												[]float64{16.8331891, 47.7314286},
-												[]float64{22.56571, 47.7314286},
-												[]float64{22.56571, 49.6138162},
-												[]float64{16.8331891, 49.6138162},
-												[]float64{16.8331891, 47.7314286},
-											},
-										},
-									},
-									nil,
-								),
+								StationID:   "station1",
+								Name:        "Stanica",
+								Lat:         48.1234,
+								Lon:         21.1234,
+								Address:     "Ulica 123",
+								StationArea: stationArea,
 							},
 						},
 					},
@@ -122,25 +123,12 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 					Data: &gbfs.FeedStationInformationData{
 						Stations: []*gbfs.FeedStationInformationStation{
 							&gbfs.FeedStationInformationStation{
-								StationID: "station1",
-								Name:      "Station",
-								Lat:       48.1234,
-								Lon:       21.1234,
-								Address:   "Street 123",
-								StationArea: gbfs.NewGeoJSONGeometryMultiPolygon(
-									[][][][]float64{
-										[][][]float64{
-											[][]float64{
-												[]float64{16.8331891, 47.7314286},
-												[]float64{22.56571, 47.7314286},
-												[]float64{22.56571, 49.6138162},
-												[]float64{16.8331891, 49.6138162},
-												[]float64{16.8331891, 47.7314286},
-											},
-										},
-									},
-									nil,
-								),
+								StationID:   "station1",
+								Name:        "Station",
+								Lat:         48.1234,
+								Lon:         21.1234,
+								Address:     "Street 123",
+								StationArea: stationArea,
 							},
 						},
 					},
@@ -278,7 +266,11 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 				regions := []*gbfs.FeedSystemRegionsRegion{
 					&gbfs.FeedSystemRegionsRegion{
 						RegionID: "region1",
-						Name:     "Region Name",
+						Name:     "Region Name 1",
+					},
+					&gbfs.FeedSystemRegionsRegion{
+						RegionID: "region2",
+						Name:     "Region Name 2",
 					},
 				}
 				feedSK := &gbfs.FeedSystemRegions{

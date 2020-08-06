@@ -12,10 +12,10 @@ type (
 	}
 	// FeedSystemHoursRentalHour ...
 	FeedSystemHoursRentalHour struct {
-		UserTypes []UserType `json:"user_types"`
-		Days      []Day      `json:"days"`
-		StartTime Time       `json:"start_time"`
-		EndTime   Time       `json:"end_time"`
+		UserTypes []string `json:"user_types"`
+		Days      []string `json:"days"`
+		StartTime Time     `json:"start_time"`
+		EndTime   Time     `json:"end_time"`
 	}
 )
 

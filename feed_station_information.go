@@ -21,7 +21,7 @@ type (
 		CrossStreet         string           `json:"cross_street,omitempty"`
 		RegionID            string           `json:"region_id,omitempty"`
 		PostCode            string           `json:"post_code,omitempty"`
-		RentalMethods       []RentalMethod   `json:"rental_methods,omitempty"`
+		RentalMethods       []string         `json:"rental_methods,omitempty"`
 		IsVirtualStation    Boolean          `json:"is_virtual_station,omitempty"` // (v2.1-RC)
 		StationArea         *GeoJSONGeometry `json:"station_area,omitempty"`       // (v2.1-RC)
 		Capacity            int64            `json:"capacity,omitempty"`

@@ -13,7 +13,7 @@ type (
 	// FeedSystemAlertsAlert ...
 	FeedSystemAlertsAlert struct {
 		AlertID     string                       `json:"alert_id"`
-		Type        AlertType                    `json:"type"`
+		Type        string                       `json:"type"`
 		Times       []*FeedSystemAlertsAlertTime `json:"times,omitempty"`
 		StationIDs  []string                     `json:"station_ids,omitempty"`
 		RegionIDs   []string                     `json:"region_ids,omitempty"`

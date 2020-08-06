@@ -57,7 +57,7 @@ Subscription options `Languages` and `FeedNames` restrict subscription only to s
 
 ```go
 s, err := gbfs.NewServer(gbfs.ServerOptions{
-    SystemID:     systemID,
+    SystemID:     "system_id",
     RootDir:      "public",
     BaseURL:      "http://127.0.0.1:8080",
     BasePath:     "v3/system_id",

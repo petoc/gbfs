@@ -65,89 +65,122 @@ const (
 	V21 string = "2.1"
 	V30 string = "3.0"
 
-	FeedNameGbfs               string = "gbfs"
-	FeedNameGbfsVersions       string = "gbfs_versions"
-	FeedNameSystemInformation  string = "system_information"
-	FeedNameVehicleTypes       string = "vehicle_types"
-	FeedNameStationInformation string = "station_information"
-	FeedNameStationStatus      string = "station_status"
-	FeedNameFreeBikeStatus     string = "free_bike_status"
-	FeedNameSystemHours        string = "system_hours"
-	FeedNameSystemCalendar     string = "system_calendar"
-	FeedNameSystemRegions      string = "system_regions"
-	FeedNameSystemPricingPlans string = "system_pricing_plans"
-	FeedNameSystemAlerts       string = "system_alerts"
-	FeedNameGeofencingZones    string = "geofencing_zones"
+	FeedNameGbfs               = "gbfs"
+	FeedNameGbfsVersions       = "gbfs_versions"
+	FeedNameSystemInformation  = "system_information"
+	FeedNameVehicleTypes       = "vehicle_types"
+	FeedNameStationInformation = "station_information"
+	FeedNameStationStatus      = "station_status"
+	FeedNameFreeBikeStatus     = "free_bike_status"
+	FeedNameSystemHours        = "system_hours"
+	FeedNameSystemCalendar     = "system_calendar"
+	FeedNameSystemRegions      = "system_regions"
+	FeedNameSystemPricingPlans = "system_pricing_plans"
+	FeedNameSystemAlerts       = "system_alerts"
+	FeedNameGeofencingZones    = "geofencing_zones"
 )
 
-type FormFactor string
-
 const (
-	FormFactorBicycle FormFactor = "bicycle"
-	FormFactorCar     FormFactor = "car"
-	FormFactorMoped   FormFactor = "moped"
-	FormFactorOther   FormFactor = "other"
-	FormFactorScooter FormFactor = "scooter"
+	FormFactorBicycle = "bicycle"
+	FormFactorCar     = "car"
+	FormFactorMoped   = "moped"
+	FormFactorOther   = "other"
+	FormFactorScooter = "scooter"
 )
 
-type PropulsionType string
+// FormFactorAll ...
+func FormFactorAll() []string {
+	return []string{
+		FormFactorBicycle,
+		FormFactorCar,
+		FormFactorMoped,
+		FormFactorOther,
+		FormFactorScooter,
+	}
+}
 
 const (
-	PropulsionTypeHuman          PropulsionType = "human"
-	PropulsionTypeElectricAssist PropulsionType = "electric_assist"
-	PropulsionTypeElectric       PropulsionType = "electric"
-	PropulsionTypeCombustion     PropulsionType = "combustion"
+	PropulsionTypeHuman          = "human"
+	PropulsionTypeElectricAssist = "electric_assist"
+	PropulsionTypeElectric       = "electric"
+	PropulsionTypeCombustion     = "combustion"
 )
 
-type AlertType string
+// PropulsionTypeAll ...
+func PropulsionTypeAll() []string {
+	return []string{
+		PropulsionTypeHuman,
+		PropulsionTypeElectricAssist,
+		PropulsionTypeElectric,
+		PropulsionTypeCombustion,
+	}
+}
 
 const (
-	AlertTypeSystemClosure  AlertType = "SYSTEM_CLOSURE"
-	AlertTypeStationClosure AlertType = "STATION_CLOSURE"
-	AlertTypeStationMove    AlertType = "STATION_MOVE"
-	AlertTypeOther          AlertType = "OTHER"
+	AlertTypeSystemClosure  = "SYSTEM_CLOSURE"
+	AlertTypeStationClosure = "STATION_CLOSURE"
+	AlertTypeStationMove    = "STATION_MOVE"
+	AlertTypeOther          = "OTHER"
 )
 
-type RentalMethod string
+// AlertTypeAll ...
+func AlertTypeAll() []string {
+	return []string{
+		AlertTypeSystemClosure,
+		AlertTypeStationClosure,
+		AlertTypeStationMove,
+		AlertTypeOther,
+	}
+}
 
 const (
-	RentalMethodKey           RentalMethod = "KEY"
-	RentalMethodCreditCard    RentalMethod = "CREDITCARD"
-	RentalMethodPayPass       RentalMethod = "PAYPASS"
-	RentalMethodApplePay      RentalMethod = "APPLEPAY"
-	RentalMethodAndroidPay    RentalMethod = "ANDROIDPAY"
-	RentalMethodTransitCard   RentalMethod = "TRANSITCARD"
-	RentalMethodAccountNumber RentalMethod = "ACCOUNTNUMBER"
-	RentalMethodPhone         RentalMethod = "PHONE"
+	RentalMethodKey           = "KEY"
+	RentalMethodCreditCard    = "CREDITCARD"
+	RentalMethodPayPass       = "PAYPASS"
+	RentalMethodApplePay      = "APPLEPAY"
+	RentalMethodAndroidPay    = "ANDROIDPAY"
+	RentalMethodTransitCard   = "TRANSITCARD"
+	RentalMethodAccountNumber = "ACCOUNTNUMBER"
+	RentalMethodPhone         = "PHONE"
 )
 
-type UserType string
+// RentalMethodAll ...
+func RentalMethodAll() []string {
+	return []string{
+		RentalMethodKey,
+		RentalMethodCreditCard,
+		RentalMethodPayPass,
+		RentalMethodApplePay,
+		RentalMethodAndroidPay,
+		RentalMethodTransitCard,
+		RentalMethodAccountNumber,
+		RentalMethodPhone,
+	}
+}
 
 const (
-	UserTypeMember    UserType = "member"
-	UserTypeNonMember UserType = "nonmember"
+	UserTypeMember    = "member"
+	UserTypeNonMember = "nonmember"
 )
 
 // UserTypeAll ...
-func UserTypeAll() []UserType {
-	return []UserType{UserTypeMember, UserTypeNonMember}
+func UserTypeAll() []string {
+	return []string{UserTypeMember, UserTypeNonMember}
 }
 
-type Day string
-
 const (
-	DayMon Day = "mon"
-	DayTue Day = "tue"
-	DayWed Day = "wed"
-	DayThu Day = "thu"
-	DayFri Day = "fri"
-	DaySat Day = "sat"
-	DaySun Day = "sun"
+	DayMon = "mon"
+	DayTue = "tue"
+	DayWed = "wed"
+	DayThu = "thu"
+	DayFri = "fri"
+	DaySat = "sat"
+	DaySun = "sun"
 )
 
 // DayAll ...
-func DayAll() []Day {
-	return []Day{DayMon, DayTue, DayWed, DayThu, DayFri, DaySat, DaySun}
+func DayAll() []string {
+	return []string{DayMon, DayTue, DayWed, DayThu, DayFri, DaySat, DaySun}
 }
 
 // GeoJSONGeometry ...
@@ -213,16 +246,6 @@ func FeedNameAll() []string {
 		FeedNameSystemAlerts,
 		FeedNameGeofencingZones,
 	}
-}
-
-// FeedNameValid ...
-func FeedNameValid(name string) bool {
-	for _, n := range FeedNameAll() {
-		if name == n {
-			return true
-		}
-	}
-	return false
 }
 
 // FeedStruct ...

@@ -37,11 +37,15 @@ func NewInMemoryCache() *InMemoryCache {
 	}
 }
 
-func indexOfStr(n string, h []string) int {
+func indexInSlice(n string, h []string) int {
 	for k, v := range h {
 		if n == v {
 			return k
 		}
 	}
 	return -1
+}
+
+func inSlice(n string, h []string) bool {
+	return indexInSlice(n, h) > -1
 }

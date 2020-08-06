@@ -62,7 +62,7 @@ func NewClient(options ClientOptions) (*Client, error) {
 
 func cacheGet(c *Client, feed Feed) (Feed, error) {
 	if c.cache != nil {
-		cacheKey := string(feed.Name())
+		cacheKey := feed.Name()
 		if feed.GetLanguage() != "" && feed.Name() != FeedNameGbfs {
 			cacheKey = cacheKey + ":" + feed.GetLanguage()
 		}
@@ -76,7 +76,7 @@ func cacheGet(c *Client, feed Feed) (Feed, error) {
 
 func cacheSet(c *Client, feed Feed) {
 	if c.cache != nil {
-		cacheKey := string(feed.Name())
+		cacheKey := feed.Name()
 		if feed.GetLanguage() != "" && feed.Name() != FeedNameGbfs {
 			cacheKey = cacheKey + ":" + feed.GetLanguage()
 		}
@@ -190,15 +190,15 @@ func (c *Client) Subscribe(options ClientSubscribeOptions) error {
 			return
 		}
 		channel <- g
-		if options.FeedNames == nil || indexOfStr(g.Name(), options.FeedNames) > -1 {
+		if options.FeedNames == nil || inSlice(g.Name(), options.FeedNames) {
 			loops = append(loops, g)
 		}
 		for language, languageData := range g.Data {
-			if options.Languages != nil && indexOfStr(language, options.Languages) == -1 {
+			if options.Languages != nil && !inSlice(language, options.Languages) {
 				continue
 			}
 			for _, feed := range languageData.Feeds {
-				if options.FeedNames != nil && indexOfStr(feed.Name, options.FeedNames) == -1 {
+				if options.FeedNames != nil && !inSlice(feed.Name, options.FeedNames) {
 					continue
 				}
 				f := FeedStruct(feed.Name)

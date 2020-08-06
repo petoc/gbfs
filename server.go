@@ -128,12 +128,12 @@ func (s *Server) Start() error {
 					if s.Options.BasePath != "" {
 						pathSegments = append(pathSegments, strings.Trim(s.Options.BasePath, "/"))
 					}
-					if string(feed.GetLanguage()) != "" {
-						pathSegments = append(pathSegments, string(feed.GetLanguage()))
+					if feed.GetLanguage() != "" {
+						pathSegments = append(pathSegments, feed.GetLanguage())
 					}
 					path := strings.Trim(feedHandler.Path, "/")
 					if path == "" {
-						path = string(feed.Name()) + ".json"
+						path = feed.Name() + ".json"
 					}
 					pathSegments = append(pathSegments, path)
 					filePath := strings.Join(append([]string{s.Options.RootDir}, pathSegments...), "/")
@@ -177,7 +177,7 @@ func (s *Server) Start() error {
 		feedNames := FeedNameAll()
 		for _, langData := range gbfsFeed.Data {
 			sort.Slice(langData.Feeds, func(i, j int) bool {
-				if indexOfStr(string(langData.Feeds[i].Name), feedNames) > indexOfStr(string(langData.Feeds[j].Name), feedNames) {
+				if indexInSlice(langData.Feeds[i].Name, feedNames) > indexInSlice(langData.Feeds[j].Name, feedNames) {
 					return false
 				}
 				return true
@@ -189,7 +189,7 @@ func (s *Server) Start() error {
 			if s.Options.BasePath != "" {
 				pathSegments = append(pathSegments, strings.Trim(s.Options.BasePath, "/"))
 			}
-			pathSegments = append(pathSegments, string(gbfsFeed.Name())+".json")
+			pathSegments = append(pathSegments, gbfsFeed.Name()+".json")
 			filePath := strings.Join(append([]string{s.Options.RootDir}, pathSegments...), "/")
 			err := writeFeed(filePath, gbfsFeed)
 			s.Options.UpdateHandler(s, gbfsFeed, strings.Join(pathSegments, "/"), err)

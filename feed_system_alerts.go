@@ -12,20 +12,20 @@ type (
 	}
 	// FeedSystemAlertsAlert ...
 	FeedSystemAlertsAlert struct {
-		AlertID     string                       `json:"alert_id"`
-		Type        string                       `json:"type"`
+		AlertID     *string                      `json:"alert_id"`
+		Type        *string                      `json:"type"`
 		Times       []*FeedSystemAlertsAlertTime `json:"times,omitempty"`
 		StationIDs  []string                     `json:"station_ids,omitempty"`
 		RegionIDs   []string                     `json:"region_ids,omitempty"`
-		URL         string                       `json:"url,omitempty"`
-		Summary     string                       `json:"summary"`
-		Description string                       `json:"description,omitempty"`
-		LastUpdated Timestamp                    `json:"last_updated,omitempty"`
+		URL         *string                      `json:"url,omitempty"`
+		Summary     *string                      `json:"summary"`
+		Description *string                      `json:"description,omitempty"`
+		LastUpdated *Timestamp                   `json:"last_updated,omitempty"`
 	}
 	// FeedSystemAlertsAlertTime ...
 	FeedSystemAlertsAlertTime struct {
-		Start Timestamp `json:"start"`
-		End   Timestamp `json:"end,omitempty"`
+		Start *Timestamp `json:"start"`
+		End   *Timestamp `json:"end,omitempty"`
 	}
 )
 

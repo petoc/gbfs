@@ -155,8 +155,8 @@ func (s *Server) Start() error {
 						gbfsFeedLanguage, ok = gbfsFeed.Data[feed.GetLanguage()]
 						if ok {
 							gbfsFeedLanguage.Feeds = append(gbfsFeedLanguage.Feeds, &FeedGbfsFeed{
-								Name: feed.Name(),
-								URL:  strings.Join(append([]string{strings.Trim(s.Options.BaseURL, "/")}, pathSegments...), "/"),
+								Name: NewString(feed.Name()),
+								URL:  NewString(strings.Join(append([]string{strings.Trim(s.Options.BaseURL, "/")}, pathSegments...), "/")),
 							})
 						}
 					}
@@ -177,7 +177,7 @@ func (s *Server) Start() error {
 		feedNames := FeedNameAll()
 		for _, langData := range gbfsFeed.Data {
 			sort.Slice(langData.Feeds, func(i, j int) bool {
-				if indexInSlice(langData.Feeds[i].Name, feedNames) > indexInSlice(langData.Feeds[j].Name, feedNames) {
+				if indexInSlice(*langData.Feeds[i].Name, feedNames) > indexInSlice(*langData.Feeds[j].Name, feedNames) {
 					return false
 				}
 				return true
@@ -193,7 +193,7 @@ func (s *Server) Start() error {
 			filePath := strings.Join(append([]string{s.Options.RootDir}, pathSegments...), "/")
 			err := writeFeed(filePath, gbfsFeed)
 			s.Options.UpdateHandler(s, gbfsFeed, strings.Join(pathSegments, "/"), err)
-			if gbfsFeed.TTL == 0 {
+			if gbfsFeed.GetTTL() == 0 {
 				break
 			}
 			time.Sleep(time.Duration(gbfsFeed.GetTTL()) * time.Second)

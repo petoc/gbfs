@@ -6,14 +6,6 @@ import (
 )
 
 type (
-	// Boolean ...
-	Boolean bool
-	// Date ...
-	Date string
-	// Time ...
-	Time string
-	// Timestamp ...
-	Timestamp int64
 	// Feed ...
 	Feed interface {
 		Name() string
@@ -31,17 +23,17 @@ type (
 	}
 	// FeedCommon ...
 	FeedCommon struct {
-		Language    string      `json:"-"` // Unofficial helper parameter
-		LastUpdated Timestamp   `json:"last_updated"`
-		TTL         int         `json:"ttl"`
-		Version     string      `json:"version,omitempty"` // (v1.1)
+		Language    *string     `json:"-"` // Unofficial helper parameter
+		LastUpdated *Timestamp  `json:"last_updated"`
+		TTL         *int        `json:"ttl"`
+		Version     *string     `json:"version,omitempty"` // (v1.1)
 		Data        interface{} `json:"data"`
 	}
 	// RentalURIs ...
 	RentalURIs struct {
-		Android string `json:"android,omitempty"`
-		IOS     string `json:"ios,omitempty"`
-		Web     string `json:"web,omitempty"`
+		Android *string `json:"android,omitempty"`
+		IOS     *string `json:"ios,omitempty"`
+		Web     *string `json:"web,omitempty"`
 	}
 	// RentalApps ...
 	RentalApps struct {
@@ -50,10 +42,71 @@ type (
 	}
 	// RentalApp ...
 	RentalApp struct {
-		StoreURI     string `json:"store_uri,omitempty"`     // (v1.1)
-		DiscoveryURI string `json:"discovery_uri,omitempty"` // (v1.1)
+		StoreURI     *string `json:"store_uri,omitempty"`     // (v1.1)
+		DiscoveryURI *string `json:"discovery_uri,omitempty"` // (v1.1)
 	}
 )
+
+// NewInt64 ...
+func NewInt64(v int64) *int64 {
+	return &v
+}
+
+// NewFloat64 ...
+func NewFloat64(v float64) *float64 {
+	return &v
+}
+
+// NewString ...
+func NewString(v string) *string {
+	return &v
+}
+
+// Boolean ...
+type Boolean bool
+
+// UnmarshalJSON ...
+func (t *Boolean) UnmarshalJSON(b []byte) error {
+	switch v := strings.ToLower(strings.Trim(string(b), `"`)); v {
+	case "1", "true":
+		*t = true
+	default:
+		*t = false
+	}
+	return nil
+}
+
+// NewBoolean ...
+func NewBoolean(v bool) *Boolean {
+	t := Boolean(v)
+	return &t
+}
+
+// Date ...
+type Date string
+
+// Time ...
+type Time string
+
+// NewTime ...
+func NewTime(v string) *Time {
+	t := Time(v)
+	return &t
+}
+
+// Timestamp ...
+type Timestamp int64
+
+// Time ...
+func (t Timestamp) Time() time.Time {
+	return time.Unix(int64(t), 0)
+}
+
+// NewTimestamp ...
+func NewTimestamp(v Timestamp) *Timestamp {
+	t := Timestamp(v)
+	return &t
+}
 
 const (
 	DateFormat = "2006-01-02"
@@ -281,22 +334,6 @@ func FeedStruct(name string) Feed {
 	return nil
 }
 
-// UnmarshalJSON ...
-func (t *Boolean) UnmarshalJSON(b []byte) error {
-	switch v := strings.ToLower(strings.Trim(string(b), `"`)); v {
-	case "1", "true":
-		*t = true
-	default:
-		*t = false
-	}
-	return nil
-}
-
-// Time ...
-func (t Timestamp) Time() time.Time {
-	return time.Unix(int64(t), 0)
-}
-
 // Name ...
 func (s FeedCommon) Name() string {
 	return ""
@@ -304,45 +341,57 @@ func (s FeedCommon) Name() string {
 
 // GetLanguage ...
 func (s FeedCommon) GetLanguage() string {
-	return s.Language
+	if s.Language == nil {
+		return ""
+	}
+	return *s.Language
 }
 
 // SetLanguage ...
-func (s *FeedCommon) SetLanguage(l string) Feed {
-	s.Language = l
+func (s *FeedCommon) SetLanguage(v string) Feed {
+	s.Language = &v
 	return s
 }
 
 // GetLastUpdated ...
 func (s FeedCommon) GetLastUpdated() Timestamp {
-	return s.LastUpdated
+	if s.LastUpdated == nil {
+		return Timestamp(0)
+	}
+	return *s.LastUpdated
 }
 
 // SetLastUpdated ...
-func (s *FeedCommon) SetLastUpdated(t Timestamp) Feed {
-	s.LastUpdated = t
+func (s *FeedCommon) SetLastUpdated(v Timestamp) Feed {
+	s.LastUpdated = &v
 	return s
 }
 
 // GetTTL ...
 func (s FeedCommon) GetTTL() int {
-	return s.TTL
+	if s.TTL == nil {
+		return 0
+	}
+	return *s.TTL
 }
 
 // SetTTL ...
-func (s *FeedCommon) SetTTL(t int) Feed {
-	s.TTL = t
+func (s *FeedCommon) SetTTL(v int) Feed {
+	s.TTL = &v
 	return s
 }
 
 // GetVersion ...
 func (s FeedCommon) GetVersion() string {
-	return s.Version
+	if s.Version == nil {
+		return ""
+	}
+	return *s.Version
 }
 
 // SetVersion ...
 func (s *FeedCommon) SetVersion(v string) Feed {
-	s.Version = v
+	s.Version = &v
 	return s
 }
 
@@ -359,8 +408,8 @@ func (s *FeedCommon) SetData(v interface{}) Feed {
 
 // Expired ...
 func (s FeedCommon) Expired() bool {
-	if s.TTL == 0 {
+	if s.TTL == nil || *s.TTL == 0 {
 		return false
 	}
-	return int64(s.LastUpdated)+int64(s.TTL) < time.Now().Unix()
+	return int64(*s.LastUpdated)+int64(*s.TTL) < time.Now().Unix()
 }

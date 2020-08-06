@@ -12,12 +12,12 @@ type (
 	}
 	// FeedSystemCalendarCalendar ...
 	FeedSystemCalendarCalendar struct {
-		StartMonth int `json:"start_month"`
-		StartDay   int `json:"start_day"`
-		StartYear  int `json:"start_year,omitempty"`
-		EndMonth   int `json:"end_month"`
-		EndDay     int `json:"end_day"`
-		EndYear    int `json:"end_year,omitempty"`
+		StartMonth *int64 `json:"start_month"`
+		StartDay   *int64 `json:"start_day"`
+		StartYear  *int64 `json:"start_year,omitempty"`
+		EndMonth   *int64 `json:"end_month"`
+		EndDay     *int64 `json:"end_day"`
+		EndYear    *int64 `json:"end_year,omitempty"`
 	}
 )
 

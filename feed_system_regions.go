@@ -12,8 +12,8 @@ type (
 	}
 	// FeedSystemRegionsRegion ...
 	FeedSystemRegionsRegion struct {
-		RegionID string `json:"region_id"`
-		Name     string `json:"name"`
+		RegionID *string `json:"region_id"`
+		Name     *string `json:"name"`
 	}
 )
 

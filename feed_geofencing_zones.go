@@ -22,17 +22,17 @@ type (
 	}
 	// FeedGeofencingZonesGeoJSONFeatureProperties ...
 	FeedGeofencingZonesGeoJSONFeatureProperties struct {
-		Name  string                                             `json:"name,omitempty"`
-		Start Timestamp                                          `json:"start,omitempty"`
-		End   Timestamp                                          `json:"end,omitempty"`
+		Name  *string                                            `json:"name,omitempty"`
+		Start *Timestamp                                         `json:"start,omitempty"`
+		End   *Timestamp                                         `json:"end,omitempty"`
 		Rules []*FeedGeofencingZonesGeoJSONFeaturePropertiesRule `json:"rules,omitempty"`
 	}
 	// FeedGeofencingZonesGeoJSONFeaturePropertiesRule ...
 	FeedGeofencingZonesGeoJSONFeaturePropertiesRule struct {
 		VehicleTypeIDs     []string `json:"vehicle_type_ids,omitempty"`
-		RideAllowed        Boolean  `json:"ride_allowed"`
-		RideThroughAllowed Boolean  `json:"ride_through_allowed"`
-		MaximumSpeedKph    int64    `json:"maximum_speed_kph,omitempty"`
+		RideAllowed        *Boolean `json:"ride_allowed"`
+		RideThroughAllowed *Boolean `json:"ride_through_allowed"`
+		MaximumSpeedKph    *int64   `json:"maximum_speed_kph,omitempty"`
 	}
 )
 

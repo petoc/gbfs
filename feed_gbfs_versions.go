@@ -12,8 +12,8 @@ type (
 	}
 	// FeedGbfsVersionsVersion ...
 	FeedGbfsVersionsVersion struct {
-		Version string `json:"version"`
-		URL     string `json:"url"`
+		Version *string `json:"version"`
+		URL     *string `json:"url"`
 	}
 )
 

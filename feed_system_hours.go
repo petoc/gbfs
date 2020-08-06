@@ -14,8 +14,8 @@ type (
 	FeedSystemHoursRentalHour struct {
 		UserTypes []string `json:"user_types"`
 		Days      []string `json:"days"`
-		StartTime *Time    `json:"start_time"`
-		EndTime   *Time    `json:"end_time"`
+		StartTime *string  `json:"start_time"`
+		EndTime   *string  `json:"end_time"`
 	}
 )
 

@@ -15,7 +15,7 @@ type (
 		Operator                    *string     `json:"operator,omitempty"`
 		URL                         *string     `json:"url,omitempty"`
 		PurchaseURL                 *string     `json:"purchase_url,omitempty"`
-		StartDate                   *Date       `json:"start_date,omitempty"`
+		StartDate                   *string     `json:"start_date,omitempty"`
 		PhoneNumber                 *string     `json:"phone_number,omitempty"`
 		Email                       *string     `json:"email,omitempty"`
 		FeedContactEmail            *string     `json:"feed_contact_email,omitempty"` // (v1.1)

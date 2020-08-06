@@ -82,18 +82,6 @@ func NewBoolean(v bool) *Boolean {
 	return &t
 }
 
-// Date ...
-type Date string
-
-// Time ...
-type Time string
-
-// NewTime ...
-func NewTime(v string) *Time {
-	t := Time(v)
-	return &t
-}
-
 // Timestamp ...
 type Timestamp int64
 
@@ -103,7 +91,7 @@ func (t Timestamp) Time() time.Time {
 }
 
 // NewTimestamp ...
-func NewTimestamp(v Timestamp) *Timestamp {
+func NewTimestamp(v int64) *Timestamp {
 	t := Timestamp(v)
 	return &t
 }

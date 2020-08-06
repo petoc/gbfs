@@ -220,8 +220,8 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 						&gbfs.FeedSystemHoursRentalHour{
 							UserTypes: gbfs.UserTypeAll(),
 							Days:      gbfs.DayAll(),
-							StartTime: gbfs.NewTime("00:00:00"),
-							EndTime:   gbfs.NewTime("23:59:59"),
+							StartTime: gbfs.NewString("00:00:00"),
+							EndTime:   gbfs.NewString("23:59:59"),
 						},
 					},
 				}

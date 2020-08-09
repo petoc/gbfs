@@ -12,11 +12,11 @@ type (
 	}
 	// FeedSystemAlertsAlert ...
 	FeedSystemAlertsAlert struct {
-		AlertID     *string                      `json:"alert_id"`
+		AlertID     *ID                          `json:"alert_id"`
 		Type        *string                      `json:"type"`
 		Times       []*FeedSystemAlertsAlertTime `json:"times,omitempty"`
-		StationIDs  []string                     `json:"station_ids,omitempty"`
-		RegionIDs   []string                     `json:"region_ids,omitempty"`
+		StationIDs  []*ID                        `json:"station_ids,omitempty"`
+		RegionIDs   []*ID                        `json:"region_ids,omitempty"`
 		URL         *string                      `json:"url,omitempty"`
 		Summary     *string                      `json:"summary"`
 		Description *string                      `json:"description,omitempty"`

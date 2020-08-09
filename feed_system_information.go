@@ -8,7 +8,7 @@ type (
 	}
 	// FeedSystemInformationData ...
 	FeedSystemInformationData struct {
-		SystemID                    *string     `json:"system_id"`
+		SystemID                    *ID         `json:"system_id"`
 		Language                    *string     `json:"language"`
 		Name                        *string     `json:"name"`
 		ShortName                   *string     `json:"short_name,omitempty"`

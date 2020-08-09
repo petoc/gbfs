@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"reflect"
+	"strconv"
 	"time"
 )
 
@@ -104,11 +105,11 @@ func (c *Client) GetURL(url string, feed Feed) error {
 		if res.StatusCode == http.StatusNotFound {
 			return ErrFeedNotFound
 		}
-		return errors.New("invalid response status")
+		return errors.New("invalid response status: " + strconv.Itoa(res.StatusCode))
 	}
 	err = json.NewDecoder(res.Body).Decode(feed)
 	if err != nil {
-		return errors.New("invalid json")
+		return err
 	}
 	return nil
 }

@@ -1,6 +1,8 @@
 package gbfs
 
 import (
+	"encoding/json"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -85,6 +87,16 @@ func NewBoolean(v bool) *Boolean {
 // Timestamp ...
 type Timestamp int64
 
+// UnmarshalJSON ...
+func (t *Timestamp) UnmarshalJSON(b []byte) error {
+	f, err := strconv.ParseFloat(string(b), 64)
+	if err != nil {
+		return err
+	}
+	*t = Timestamp(f)
+	return nil
+}
+
 // Time ...
 func (t Timestamp) Time() time.Time {
 	return time.Unix(int64(t), 0)
@@ -93,6 +105,97 @@ func (t Timestamp) Time() time.Time {
 // NewTimestamp ...
 func NewTimestamp(v int64) *Timestamp {
 	t := Timestamp(v)
+	return &t
+}
+
+// ID ...
+type ID string
+
+// UnmarshalJSON ...
+func (t *ID) UnmarshalJSON(b []byte) error {
+	*t = ID(strings.Trim(string(b), `"`))
+	return nil
+}
+
+// NewID ...
+func NewID(v string) *ID {
+	t := ID(v)
+	return &t
+}
+
+// Price ...
+type Price struct {
+	Float64 float64
+	OldType string
+}
+
+// UnmarshalJSON ...
+func (p *Price) UnmarshalJSON(b []byte) error {
+	tv := strings.Trim(string(b), `"`)
+	f, err := strconv.ParseFloat(strings.Trim(string(b), `"`), 64)
+	if err != nil {
+		return err
+	}
+	p.Float64 = f
+	if tv != string(b) {
+		p.OldType = "string"
+	}
+	return nil
+}
+
+// MarshalJSON ...
+func (p *Price) MarshalJSON() ([]byte, error) {
+	return json.Marshal(p.Float64)
+}
+
+// String ...
+func (p *Price) String() string {
+	return strconv.FormatFloat(p.Float64, 'f', -1, 64)
+}
+
+// NewPrice ...
+func NewPrice(v float64) *Price {
+	t := Price{
+		Float64: v,
+	}
+	return &t
+}
+
+// Coordinate ...
+type Coordinate struct {
+	Float64 float64
+	OldType string
+}
+
+// UnmarshalJSON ...
+func (p *Coordinate) UnmarshalJSON(b []byte) error {
+	tv := strings.Trim(string(b), `"`)
+	f, err := strconv.ParseFloat(strings.Trim(string(b), `"`), 64)
+	if err != nil {
+		return err
+	}
+	p.Float64 = f
+	if tv != string(b) {
+		p.OldType = "string"
+	}
+	return nil
+}
+
+// MarshalJSON ...
+func (p *Coordinate) MarshalJSON() ([]byte, error) {
+	return json.Marshal(p.Float64)
+}
+
+// String ...
+func (p *Coordinate) String() string {
+	return strconv.FormatFloat(p.Float64, 'f', -1, 64)
+}
+
+// NewCoordinate ...
+func NewCoordinate(v float64) *Coordinate {
+	t := Coordinate{
+		Float64: v,
+	}
 	return &t
 }
 

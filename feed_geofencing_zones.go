@@ -29,7 +29,7 @@ type (
 	}
 	// FeedGeofencingZonesGeoJSONFeaturePropertiesRule ...
 	FeedGeofencingZonesGeoJSONFeaturePropertiesRule struct {
-		VehicleTypeIDs     []string `json:"vehicle_type_ids,omitempty"`
+		VehicleTypeIDs     []*ID    `json:"vehicle_type_ids,omitempty"`
 		RideAllowed        *Boolean `json:"ride_allowed"`
 		RideThroughAllowed *Boolean `json:"ride_through_allowed"`
 		MaximumSpeedKph    *int64   `json:"maximum_speed_kph,omitempty"`

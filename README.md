@@ -25,7 +25,7 @@ if err != nil {
     log.Println(err)
 }
 if f.Data != nil {
-    log.Printf("feed=%s system_id=%s", f.Name(), f.Data.SystemID)
+    log.Printf("feed=%s system_id=%s", f.Name(), *f.Data.SystemID)
 }
 ```
 

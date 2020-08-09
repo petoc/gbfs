@@ -12,11 +12,11 @@ type (
 	}
 	// FeedSystemPricingPlansPricingPlan ...
 	FeedSystemPricingPlansPricingPlan struct {
-		PlanID      *string  `json:"plan_id"`
+		PlanID      *ID      `json:"plan_id"`
 		URL         *string  `json:"url,omitempty"`
 		Name        *string  `json:"name"`
 		Currency    *string  `json:"currency"`
-		Price       *float64 `json:"price"`
+		Price       *Price   `json:"price"`
 		IsTaxable   *Boolean `json:"is_taxable"`
 		Description *string  `json:"description"`
 	}

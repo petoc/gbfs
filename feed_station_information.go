@@ -12,14 +12,14 @@ type (
 	}
 	// FeedStationInformationStation ...
 	FeedStationInformationStation struct {
-		StationID           *string          `json:"station_id"`
+		StationID           *ID              `json:"station_id"`
 		Name                *string          `json:"name"`
 		ShortName           *string          `json:"short_name,omitempty"`
-		Lat                 *float64         `json:"lat"`
-		Lon                 *float64         `json:"lon"`
+		Lat                 *Coordinate      `json:"lat"`
+		Lon                 *Coordinate      `json:"lon"`
 		Address             *string          `json:"address,omitempty"`
 		CrossStreet         *string          `json:"cross_street,omitempty"`
-		RegionID            *string          `json:"region_id,omitempty"`
+		RegionID            *ID              `json:"region_id,omitempty"`
 		PostCode            *string          `json:"post_code,omitempty"`
 		RentalMethods       []string         `json:"rental_methods,omitempty"`
 		IsVirtualStation    *Boolean         `json:"is_virtual_station,omitempty"` // (v2.1-RC)

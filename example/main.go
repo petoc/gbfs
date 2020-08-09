@@ -16,21 +16,22 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 			Handler: func(s *gbfs.Server) ([]gbfs.Feed, error) {
 				feedSK := &gbfs.FeedSystemInformation{
 					Data: &gbfs.FeedSystemInformationData{
-						SystemID:    gbfs.NewString(s.Options.SystemID),
-						Language:    gbfs.NewString("en"),
+						SystemID:    gbfs.NewID(s.Options.SystemID),
+						Language:    gbfs.NewString("sk"),
 						Name:        gbfs.NewString("Bike Sharing"),
 						Operator:    gbfs.NewString("Bike Sharing, Street 123, 12345 City"),
 						URL:         gbfs.NewString("http://localhost/bikesharing/sk"),
 						PhoneNumber: gbfs.NewString("00421987654321"),
 						Email:       gbfs.NewString("bikesharing@example.com"),
 						Timezone:    gbfs.NewString("Europe/Bratislava"),
+						LicenseID:   gbfs.NewString("MIT"),
 					},
 				}
 				feedSK.Language = gbfs.NewString("sk")
 				// feedSK.TTL = 60
 				feedEN := &gbfs.FeedSystemInformation{
 					Data: &gbfs.FeedSystemInformationData{
-						SystemID:    gbfs.NewString(s.Options.SystemID),
+						SystemID:    gbfs.NewID(s.Options.SystemID),
 						Language:    gbfs.NewString("en"),
 						Name:        gbfs.NewString("Bike Sharing"),
 						Operator:    gbfs.NewString("Bike Sharing, Street 123, 12345 City"),
@@ -38,6 +39,7 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 						PhoneNumber: gbfs.NewString("00421987654321"),
 						Email:       gbfs.NewString("bikesharing@example.com"),
 						Timezone:    gbfs.NewString("Europe/Bratislava"),
+						LicenseID:   gbfs.NewString("MIT"),
 					},
 				}
 				feedEN.Language = gbfs.NewString("en")
@@ -51,13 +53,13 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 					Data: &gbfs.FeedVehicleTypesData{
 						VehicleTypes: []*gbfs.FeedVehicleTypesVehicleType{
 							&gbfs.FeedVehicleTypesVehicleType{
-								VehicleTypeID:  gbfs.NewString("vehicleType1"),
+								VehicleTypeID:  gbfs.NewID("vehicleType1"),
 								FormFactor:     gbfs.NewString(gbfs.FormFactorBicycle),
 								PropulsionType: gbfs.NewString(gbfs.PropulsionTypeHuman),
 								Name:           gbfs.NewString("Bicykel"),
 							},
 							&gbfs.FeedVehicleTypesVehicleType{
-								VehicleTypeID:  gbfs.NewString("vehicleType2"),
+								VehicleTypeID:  gbfs.NewID("vehicleType2"),
 								FormFactor:     gbfs.NewString(gbfs.FormFactorMoped),
 								PropulsionType: gbfs.NewString(gbfs.PropulsionTypeElectric),
 								Name:           gbfs.NewString("Skúter"),
@@ -70,13 +72,13 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 					Data: &gbfs.FeedVehicleTypesData{
 						VehicleTypes: []*gbfs.FeedVehicleTypesVehicleType{
 							&gbfs.FeedVehicleTypesVehicleType{
-								VehicleTypeID:  gbfs.NewString("vehicleType1"),
+								VehicleTypeID:  gbfs.NewID("vehicleType1"),
 								FormFactor:     gbfs.NewString(gbfs.FormFactorBicycle),
 								PropulsionType: gbfs.NewString(gbfs.PropulsionTypeHuman),
 								Name:           gbfs.NewString("Bicycle"),
 							},
 							&gbfs.FeedVehicleTypesVehicleType{
-								VehicleTypeID:  gbfs.NewString("vehicleType2"),
+								VehicleTypeID:  gbfs.NewID("vehicleType2"),
 								FormFactor:     gbfs.NewString(gbfs.FormFactorMoped),
 								PropulsionType: gbfs.NewString(gbfs.PropulsionTypeElectric),
 								Name:           gbfs.NewString("Moped"),
@@ -108,10 +110,10 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 					Data: &gbfs.FeedStationInformationData{
 						Stations: []*gbfs.FeedStationInformationStation{
 							&gbfs.FeedStationInformationStation{
-								StationID:   gbfs.NewString("station1"),
+								StationID:   gbfs.NewID("station1"),
 								Name:        gbfs.NewString("Stanica"),
-								Lat:         gbfs.NewFloat64(48.1234),
-								Lon:         gbfs.NewFloat64(21.1234),
+								Lat:         gbfs.NewCoordinate(48.1234),
+								Lon:         gbfs.NewCoordinate(21.1234),
 								Address:     gbfs.NewString("Ulica 123"),
 								StationArea: stationArea,
 							},
@@ -123,10 +125,10 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 					Data: &gbfs.FeedStationInformationData{
 						Stations: []*gbfs.FeedStationInformationStation{
 							&gbfs.FeedStationInformationStation{
-								StationID:   gbfs.NewString("station1"),
+								StationID:   gbfs.NewID("station1"),
 								Name:        gbfs.NewString("Station"),
-								Lat:         gbfs.NewFloat64(48.1234),
-								Lon:         gbfs.NewFloat64(21.1234),
+								Lat:         gbfs.NewCoordinate(48.1234),
+								Lon:         gbfs.NewCoordinate(21.1234),
 								Address:     gbfs.NewString("Street 123"),
 								StationArea: stationArea,
 							},
@@ -141,7 +143,7 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 			Handler: func(s *gbfs.Server) ([]gbfs.Feed, error) {
 				stations := []*gbfs.FeedStationStatusStation{
 					&gbfs.FeedStationStatusStation{
-						StationID:             gbfs.NewString("station1"),
+						StationID:             gbfs.NewID("station1"),
 						NumBikesAvailable:     gbfs.NewInt64(2),
 						NumBikesDisabled:      gbfs.NewInt64(0),
 						NumDocksAvailable:     gbfs.NewInt64(0),
@@ -172,21 +174,21 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 		&gbfs.FeedHandler{
 			Handler: func(s *gbfs.Server) ([]gbfs.Feed, error) {
 				bicycle1 := &gbfs.FeedFreeBikeStatusBike{
-					BikeID:        gbfs.NewString("bicyle1"),
-					SystemID:      gbfs.NewString(s.Options.SystemID),
-					Lat:           gbfs.NewFloat64(48.7162),
-					Lon:           gbfs.NewFloat64(21.2613),
-					VehicleTypeID: gbfs.NewString("vehicleType1"),
+					BikeID:        gbfs.NewID("bicyle1"),
+					SystemID:      gbfs.NewID(s.Options.SystemID),
+					Lat:           gbfs.NewCoordinate(0),
+					Lon:           gbfs.NewCoordinate(0),
+					VehicleTypeID: gbfs.NewID("vehicleType1"),
 					IsReserved:    gbfs.NewBoolean(false),
 					IsDisabled:    gbfs.NewBoolean(false),
 					LastReported:  gbfs.NewTimestamp(1577836800),
 				}
 				moped1 := &gbfs.FeedFreeBikeStatusBike{
-					BikeID:             gbfs.NewString("moped1"),
-					SystemID:           gbfs.NewString(s.Options.SystemID),
-					Lat:                gbfs.NewFloat64(48.7162),
-					Lon:                gbfs.NewFloat64(21.2613),
-					VehicleTypeID:      gbfs.NewString("vehicleType2"),
+					BikeID:             gbfs.NewID("moped1"),
+					SystemID:           gbfs.NewID(s.Options.SystemID),
+					Lat:                gbfs.NewCoordinate(48.7162),
+					Lon:                gbfs.NewCoordinate(21.2613),
+					VehicleTypeID:      gbfs.NewID("vehicleType2"),
 					IsReserved:         gbfs.NewBoolean(false),
 					IsDisabled:         gbfs.NewBoolean(false),
 					LastReported:       gbfs.NewTimestamp(1577836800),
@@ -265,11 +267,11 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 			Handler: func(s *gbfs.Server) ([]gbfs.Feed, error) {
 				regions := []*gbfs.FeedSystemRegionsRegion{
 					&gbfs.FeedSystemRegionsRegion{
-						RegionID: gbfs.NewString("region1"),
+						RegionID: gbfs.NewID("region1"),
 						Name:     gbfs.NewString("Region Name 1"),
 					},
 					&gbfs.FeedSystemRegionsRegion{
-						RegionID: gbfs.NewString("region2"),
+						RegionID: gbfs.NewID("region2"),
 						Name:     gbfs.NewString("Region Name 2"),
 					},
 				}
@@ -294,10 +296,10 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 					Data: &gbfs.FeedSystemPricingPlansData{
 						Plans: []*gbfs.FeedSystemPricingPlansPricingPlan{
 							&gbfs.FeedSystemPricingPlansPricingPlan{
-								PlanID:      gbfs.NewString("plan1"),
+								PlanID:      gbfs.NewID("plan1"),
 								Name:        gbfs.NewString("Cenový plán"),
 								Currency:    gbfs.NewString("EUR"),
-								Price:       gbfs.NewFloat64(12.34),
+								Price:       gbfs.NewPrice(12.34),
 								IsTaxable:   gbfs.NewBoolean(false),
 								Description: gbfs.NewString("Popis cenového plánu"),
 							},
@@ -309,10 +311,10 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 					Data: &gbfs.FeedSystemPricingPlansData{
 						Plans: []*gbfs.FeedSystemPricingPlansPricingPlan{
 							&gbfs.FeedSystemPricingPlansPricingPlan{
-								PlanID:      gbfs.NewString("plan1"),
+								PlanID:      gbfs.NewID("plan1"),
 								Name:        gbfs.NewString("Pricing Plan"),
 								Currency:    gbfs.NewString("EUR"),
-								Price:       gbfs.NewFloat64(12.34),
+								Price:       gbfs.NewPrice(12.34),
 								IsTaxable:   gbfs.NewBoolean(false),
 								Description: gbfs.NewString("Pricing plan description"),
 							},
@@ -329,7 +331,7 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 					Data: &gbfs.FeedSystemAlertsData{
 						Alerts: []*gbfs.FeedSystemAlertsAlert{
 							&gbfs.FeedSystemAlertsAlert{
-								AlertID: gbfs.NewString("alert1"),
+								AlertID: gbfs.NewID("alert1"),
 								Type:    gbfs.NewString(gbfs.AlertTypeSystemClosure),
 								Times: []*gbfs.FeedSystemAlertsAlertTime{
 									&gbfs.FeedSystemAlertsAlertTime{
@@ -337,8 +339,8 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 										End:   gbfs.NewTimestamp(1577908800),
 									},
 								},
-								StationIDs:  []string{"station1"},
-								RegionIDs:   []string{"region1"},
+								StationIDs:  []*gbfs.ID{gbfs.NewID("station1")},
+								RegionIDs:   []*gbfs.ID{gbfs.NewID("region1")},
 								URL:         gbfs.NewString("http://localhost/sk/alerts/alert1"),
 								Summary:     gbfs.NewString("Zhrnutie upozornenia"),
 								Description: gbfs.NewString("Popis upozornenia"),
@@ -352,7 +354,7 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 					Data: &gbfs.FeedSystemAlertsData{
 						Alerts: []*gbfs.FeedSystemAlertsAlert{
 							&gbfs.FeedSystemAlertsAlert{
-								AlertID: gbfs.NewString("alert1"),
+								AlertID: gbfs.NewID("alert1"),
 								Type:    gbfs.NewString(gbfs.AlertTypeSystemClosure),
 								Times: []*gbfs.FeedSystemAlertsAlertTime{
 									&gbfs.FeedSystemAlertsAlertTime{
@@ -360,8 +362,8 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 										End:   gbfs.NewTimestamp(1577908800),
 									},
 								},
-								StationIDs:  []string{"station1"},
-								RegionIDs:   []string{"region1"},
+								StationIDs:  []*gbfs.ID{gbfs.NewID("station1")},
+								RegionIDs:   []*gbfs.ID{gbfs.NewID("region1")},
 								URL:         gbfs.NewString("http://localhost/en/alerts/alert1"),
 								Summary:     gbfs.NewString("Alert summary"),
 								Description: gbfs.NewString("Alert description"),
@@ -392,7 +394,10 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 				)
 				rules := []*gbfs.FeedGeofencingZonesGeoJSONFeaturePropertiesRule{
 					&gbfs.FeedGeofencingZonesGeoJSONFeaturePropertiesRule{
-						VehicleTypeIDs:     []string{"vehicleType1", "vehicleType2"},
+						VehicleTypeIDs: []*gbfs.ID{
+							gbfs.NewID("vehicleType1"),
+							gbfs.NewID("vehicleType2"),
+						},
 						RideAllowed:        gbfs.NewBoolean(true),
 						RideThroughAllowed: gbfs.NewBoolean(true),
 						MaximumSpeedKph:    gbfs.NewInt64(15),
@@ -451,7 +456,7 @@ func main() {
 				log.Println(err)
 				return
 			}
-			log.Printf("system=%s ttl=%d updated=%s", s.Options.SystemID, feed.GetTTL(), path)
+			log.Printf("system=%s ttl=%d version=%s updated=%s", s.Options.SystemID, feed.GetTTL(), feed.GetVersion(), path)
 		},
 	})
 	if err != nil {
@@ -483,6 +488,14 @@ func main() {
 	})
 	if err != nil {
 		log.Fatal(err)
+	}
+	f := &gbfs.FeedSystemInformation{}
+	err = c.Get(f)
+	if err != nil {
+		log.Println(err)
+	}
+	if f.Data != nil {
+		log.Printf("feed=%s system_id=%s", f.Name(), *f.Data.SystemID)
 	}
 	err = c.Subscribe(gbfs.ClientSubscribeOptions{
 		// Languages: []string{"en"},

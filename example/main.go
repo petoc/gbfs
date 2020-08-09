@@ -489,14 +489,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	f := &gbfs.FeedSystemInformation{}
-	err = c.Get(f)
-	if err != nil {
-		log.Println(err)
-	}
-	if f.Data != nil {
-		log.Printf("feed=%s system_id=%s", f.Name(), *f.Data.SystemID)
-	}
 	err = c.Subscribe(gbfs.ClientSubscribeOptions{
 		// Languages: []string{"en"},
 		// FeedNames: []string{gbfs.FeedNameStationInformation, gbfs.FeedNameFreeBikeStatus},

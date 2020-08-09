@@ -71,7 +71,7 @@ s, err := gbfs.NewServer(gbfs.ServerOptions{
             log.Println(err)
             return
         }
-        log.Printf("system=%s ttl=%d updated=%s", s.Options.SystemID, feed.GetTTL(), path)
+        log.Printf("system=%s ttl=%d version=%s updated=%s", s.Options.SystemID, feed.GetTTL(), feed.GetVersion(), path)
     },
 })
 if err != nil {

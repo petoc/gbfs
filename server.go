@@ -176,7 +176,13 @@ func (s *Server) Start() error {
 		gbfsGenerated = true
 		feedNames := FeedNameAll()
 		for _, langData := range gbfsFeed.Data {
+			if langData.Feeds == nil {
+				continue
+			}
 			sort.Slice(langData.Feeds, func(i, j int) bool {
+				if langData.Feeds[i].Name == nil || langData.Feeds[j].Name == nil {
+					return false
+				}
 				if indexInSlice(*langData.Feeds[i].Name, feedNames) > indexInSlice(*langData.Feeds[j].Name, feedNames) {
 					return false
 				}

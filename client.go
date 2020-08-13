@@ -147,7 +147,7 @@ func (c *Client) Get(feed Feed) error {
 			}
 		}
 		for _, f := range l.Feeds {
-			if *f.Name == feed.Name() {
+			if f.Name != nil && *f.Name == feed.Name() {
 				url = *f.URL
 				break
 			}
@@ -199,7 +199,7 @@ func (c *Client) Subscribe(options ClientSubscribeOptions) error {
 				continue
 			}
 			for _, feed := range languageData.Feeds {
-				if options.FeedNames != nil && !inSlice(*feed.Name, options.FeedNames) {
+				if feed.Name == nil || options.FeedNames != nil && !inSlice(*feed.Name, options.FeedNames) {
 					continue
 				}
 				f := FeedStruct(*feed.Name)

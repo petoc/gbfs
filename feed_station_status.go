@@ -26,8 +26,8 @@ type (
 	}
 	// FeedStationStatusVehicleDock ...
 	FeedStationStatusVehicleDock struct {
-		VehicleTypeIDs []*ID  `json:"rental_methods"` // (v2.1-RC)
-		Count          *int64 `json:"count"`          // (v2.1-RC)
+		VehicleTypeIDs []*ID  `json:"vehicle_type_ids"` // (v2.1-RC)
+		Count          *int64 `json:"count"`            // (v2.1-RC)
 	}
 	// FeedStationStatusVehicle ...
 	FeedStationStatusVehicle struct {

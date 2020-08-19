@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/petoc/gbfs"
+	"github.com/petoc/gbfs/validator"
 )
 
 func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
@@ -143,17 +144,30 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 			Handler: func(s *gbfs.Server) ([]gbfs.Feed, error) {
 				stations := []*gbfs.FeedStationStatusStation{
 					&gbfs.FeedStationStatusStation{
-						StationID:             gbfs.NewID("station1"),
-						NumBikesAvailable:     gbfs.NewInt64(2),
-						NumBikesDisabled:      gbfs.NewInt64(0),
-						NumDocksAvailable:     gbfs.NewInt64(0),
-						NumDocksDisabled:      gbfs.NewInt64(0),
-						IsInstalled:           gbfs.NewBoolean(true),
-						IsRenting:             gbfs.NewBoolean(true),
-						IsReturning:           gbfs.NewBoolean(true),
-						LastReported:          gbfs.NewTimestamp(1577836800),
-						VehicleDocksAvailable: []*gbfs.FeedStationStatusVehicleDock{},
-						Vehicles:              []*gbfs.FeedStationStatusVehicle{},
+						StationID:         gbfs.NewID("station1"),
+						NumBikesAvailable: gbfs.NewInt64(2),
+						NumBikesDisabled:  gbfs.NewInt64(0),
+						NumDocksAvailable: gbfs.NewInt64(0),
+						NumDocksDisabled:  gbfs.NewInt64(0),
+						IsInstalled:       gbfs.NewBoolean(true),
+						IsRenting:         gbfs.NewBoolean(true),
+						IsReturning:       gbfs.NewBoolean(true),
+						LastReported:      gbfs.NewTimestamp(1577836800),
+						VehicleDocksAvailable: []*gbfs.FeedStationStatusVehicleDock{
+							&gbfs.FeedStationStatusVehicleDock{
+								VehicleTypeIDs: []*gbfs.ID{gbfs.NewID("vehicleType1")},
+								Count:          gbfs.NewInt64(0),
+							},
+						},
+						Vehicles: []*gbfs.FeedStationStatusVehicle{
+							&gbfs.FeedStationStatusVehicle{
+								BikeID:             gbfs.NewID("scooter2"),
+								IsDisabled:         gbfs.NewBoolean(false),
+								IsReserved:         gbfs.NewBoolean(false),
+								VehicleTypeID:      gbfs.NewID("vehicleType2"),
+								CurrentRangeMeters: gbfs.NewFloat64(100000),
+							},
+						},
 					},
 				}
 				feedSK := &gbfs.FeedStationStatus{
@@ -485,6 +499,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	f := &gbfs.FeedSystemInformation{}
+	err = c.Get(f)
+	if err != nil {
+		log.Fatal(err)
+	}
+	v := validator.New()
+	r := v.Validate(f, gbfs.V10)
+	log.Printf("infos=%v", r.Infos)
+	log.Printf("warnings=%v", r.Warnings)
+	log.Printf("errors=%v", r.Errors)
 	err = c.Subscribe(gbfs.ClientSubscribeOptions{
 		// Languages: []string{"en"},
 		// FeedNames: []string{gbfs.FeedNameStationInformation, gbfs.FeedNameFreeBikeStatus},

@@ -77,10 +77,7 @@ s, err := gbfs.NewServer(gbfs.ServerOptions{
 if err != nil {
     log.Fatal(err)
 }
-err = s.Start()
-if err != nil {
-    log.Fatal(err)
-}
+log.Fatal(s.Start())
 ```
 
 Main autodiscovery feed `gbfs.json` will be constructed from all available feeds in `FeedHandlers`. After that, all `FeedHandlers` will be regularly executed after configured `TTL`. If `TTL` is not set for individual feeds, it will be inherited from `FeedHandler`. If `TTL` is not set even for FeedHandler, `DefaultTTL` from `ServerOptions` will be used for feed.
@@ -90,22 +87,11 @@ Main autodiscovery feed `gbfs.json` will be constructed from all available feeds
 Feeds can be served as static files with standard webservers (Nginx, Apache, ...) or with simple built-in static file server.
 
 ```go
-fs, err := gbfs.NewFileServer(gbfs.FileServerOptions{
-    Addr:    "127.0.0.1:8080",
-    RootDir: "public",
-})
+fs, err := gbfs.NewFileServer("127.0.0.1:8080", "public")
 if err != nil {
     log.Fatal(err)
 }
 log.Fatal(fs.ListenAndServe())
-```
-
-#### Single system
-
-For single system deployment combined with standard webserver, function `Start` provided by `Server` can be replaced with blocking function `StartAndWait`.
-
-```go
-log.Fatal(s.StartAndWait())
 ```
 
 ## License

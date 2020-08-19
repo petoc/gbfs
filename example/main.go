@@ -466,15 +466,11 @@ func main() {
 	// if err != nil {
 	// 	log.Println(err)
 	// }
-	err = s.Start()
-	if err != nil {
-		log.Fatal(err)
-	}
 	go (func() {
-		fs, err := gbfs.NewFileServer(gbfs.FileServerOptions{
-			Addr:    "127.0.0.1:8080",
-			RootDir: "public",
-		})
+		log.Fatal(s.Start())
+	})()
+	go (func() {
+		fs, err := gbfs.NewFileServer("127.0.0.1:8080", "public")
 		if err != nil {
 			log.Fatal(err)
 		}

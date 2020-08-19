@@ -45,16 +45,6 @@ type (
 		Path     string
 		Handler  func(*Server) ([]Feed, error)
 	}
-	// FileServer ...
-	FileServer struct {
-		httpServer *http.Server
-		Options    *FileServerOptions
-	}
-	// FileServerOptions ...
-	FileServerOptions struct {
-		Addr    string
-		RootDir string
-	}
 )
 
 func writeFeed(filePath string, feed Feed) error {
@@ -171,77 +161,54 @@ func (s *Server) Start() error {
 			}
 		})(feedHandler)
 	}
-	go (func(gbfsFeed *FeedGbfs) {
-		wgGbfsFeed.Wait()
-		gbfsGenerated = true
-		feedNames := FeedNameAll()
-		for _, langData := range gbfsFeed.Data {
-			if langData.Feeds == nil {
-				continue
-			}
-			sort.Slice(langData.Feeds, func(i, j int) bool {
-				if langData.Feeds[i].Name == nil || langData.Feeds[j].Name == nil {
-					return false
-				}
-				if indexInSlice(*langData.Feeds[i].Name, feedNames) > indexInSlice(*langData.Feeds[j].Name, feedNames) {
-					return false
-				}
-				return true
-			})
+	wgGbfsFeed.Wait()
+	gbfsGenerated = true
+	feedNames := FeedNameAll()
+	for _, langData := range gbfsFeed.Data {
+		if langData.Feeds == nil {
+			continue
 		}
-		for {
-			gbfsFeed.SetLastUpdated(Timestamp(time.Now().Unix()))
-			pathSegments := []string{}
-			if s.Options.BasePath != "" {
-				pathSegments = append(pathSegments, strings.Trim(s.Options.BasePath, "/"))
+		sort.Slice(langData.Feeds, func(i, j int) bool {
+			if langData.Feeds[i].Name == nil || langData.Feeds[j].Name == nil {
+				return false
 			}
-			pathSegments = append(pathSegments, gbfsFeed.Name()+".json")
-			filePath := strings.Join(append([]string{s.Options.RootDir}, pathSegments...), "/")
-			err := writeFeed(filePath, gbfsFeed)
-			s.Options.UpdateHandler(s, gbfsFeed, strings.Join(pathSegments, "/"), err)
-			if gbfsFeed.GetTTL() == 0 {
-				break
+			if indexInSlice(*langData.Feeds[i].Name, feedNames) > indexInSlice(*langData.Feeds[j].Name, feedNames) {
+				return false
 			}
-			time.Sleep(time.Duration(gbfsFeed.GetTTL()) * time.Second)
-		}
-	})(gbfsFeed)
-	return nil
-}
-
-// StartAndWait ...
-func (s *Server) StartAndWait() error {
-	err := s.Start()
-	if err != nil {
-		return err
+			return true
+		})
 	}
-	w := make(chan struct{})
-	<-w
+	for {
+		gbfsFeed.SetLastUpdated(Timestamp(time.Now().Unix()))
+		pathSegments := []string{}
+		if s.Options.BasePath != "" {
+			pathSegments = append(pathSegments, strings.Trim(s.Options.BasePath, "/"))
+		}
+		pathSegments = append(pathSegments, gbfsFeed.Name()+".json")
+		filePath := strings.Join(append([]string{s.Options.RootDir}, pathSegments...), "/")
+		err := writeFeed(filePath, gbfsFeed)
+		s.Options.UpdateHandler(s, gbfsFeed, strings.Join(pathSegments, "/"), err)
+		if gbfsFeed.GetTTL() == 0 {
+			break
+		}
+		time.Sleep(time.Duration(gbfsFeed.GetTTL()) * time.Second)
+	}
 	return nil
 }
 
 // NewFileServer ...
-func NewFileServer(options FileServerOptions) (*FileServer, error) {
-	if options.Addr == "" {
+func NewFileServer(addr, rootDir string) (*http.Server, error) {
+	if addr == "" {
 		return nil, ErrMissingServerAddress
 	}
-	if options.RootDir == "" {
+	if rootDir == "" {
 		return nil, ErrMissingRootDir
 	}
-	s := &FileServer{
-		Options: &options,
-	}
-	if s.httpServer == nil {
-		s.httpServer = &http.Server{
-			Addr:         options.Addr,
-			Handler:      http.FileServer(http.Dir(options.RootDir)),
-			ReadTimeout:  5 * time.Second,
-			WriteTimeout: 5 * time.Second,
-		}
+	s := &http.Server{
+		Addr:         addr,
+		Handler:      http.FileServer(http.Dir(rootDir)),
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
 	}
 	return s, nil
-}
-
-// ListenAndServe ...
-func (s *FileServer) ListenAndServe() error {
-	return s.httpServer.ListenAndServe()
 }

@@ -132,7 +132,7 @@ type Price struct {
 // UnmarshalJSON ...
 func (p *Price) UnmarshalJSON(b []byte) error {
 	tv := strings.Trim(string(b), `"`)
-	f, err := strconv.ParseFloat(strings.Trim(string(b), `"`), 64)
+	f, err := strconv.ParseFloat(tv, 64)
 	if err != nil {
 		return err
 	}
@@ -170,7 +170,7 @@ type Coordinate struct {
 // UnmarshalJSON ...
 func (p *Coordinate) UnmarshalJSON(b []byte) error {
 	tv := strings.Trim(string(b), `"`)
-	f, err := strconv.ParseFloat(strings.Trim(string(b), `"`), 64)
+	f, err := strconv.ParseFloat(tv, 64)
 	if err != nil {
 		return err
 	}

@@ -21,8 +21,8 @@ type (
 		IsRenting             *Boolean                        `json:"is_renting"`
 		IsReturning           *Boolean                        `json:"is_returning"`
 		LastReported          *Timestamp                      `json:"last_reported"`
-		VehicleDocksAvailable []*FeedStationStatusVehicleDock `json:"vehicle_docks_available,omitempty"` // (v2.1-RC)
-		Vehicles              []*FeedStationStatusVehicle     `json:"vehicles,omitempty"`                // (v2.1-RC)
+		VehicleDocksAvailable []*FeedStationStatusVehicleDock `json:"vehicle_docks_available,omitempty"` // conditionally required (v2.1-RC)
+		Vehicles              []*FeedStationStatusVehicle     `json:"vehicles,omitempty"`                // conditionally required (v2.1-RC)
 	}
 	// FeedStationStatusVehicleDock ...
 	FeedStationStatusVehicleDock struct {

@@ -144,8 +144,12 @@ func TestValidateFeedStationInformation(t *testing.T) {
 		return
 	}
 	r = ValidateFeedStationInformation(f, "2.1")
-	if errorCount(r.Errors, ErrInvalidValue) != 3 {
-		t.Errorf("expected 3 errors of [%s], got %v", ErrInvalidValue, r.Errors)
+	if errorCount(r.Errors, ErrRequired) != 1 {
+		t.Errorf("expected 1 errors of [%s], got %v", ErrRequired, r.Errors)
+		return
+	}
+	if errorCount(r.Errors, ErrInvalidValue) != 2 {
+		t.Errorf("expected 2 errors of [%s], got %v", ErrInvalidValue, r.Errors)
 		return
 	}
 	station.StationArea.Type = "Polygon"

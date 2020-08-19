@@ -83,6 +83,7 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 								FormFactor:     gbfs.NewString(gbfs.FormFactorMoped),
 								PropulsionType: gbfs.NewString(gbfs.PropulsionTypeElectric),
 								Name:           gbfs.NewString("Moped"),
+								MaxRangeMeters: gbfs.NewFloat64(100000),
 							},
 						},
 					},

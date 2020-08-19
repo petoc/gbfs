@@ -94,14 +94,13 @@ func ValidateFeedStationInformation(f *gbfs.FeedStationInformation, version stri
 				r.InfoWV(sliceIndexName+".vehicle_type_capacity", ErrAvailableFromVersion, gbfs.V21)
 			}
 		} else {
-			// if s.IsVirtualStation != nil && s.IsVirtualStation.OldType != "" {
-			// 	r.WarningWSP(sliceIndexName+".is_virtual_station", ErrInvalidType, "boolean")
-			// }
 			if s.StationArea != nil {
 				if s.StationArea.Type != "MultiPolygon" {
 					r.ErrorWSP(sliceIndexName+".station_area", ErrInvalidType, "MultiPolygon")
+				} else if s.StationArea.Coordinates == nil {
+					r.ErrorW(sliceIndexName+".station_area.coordinates", ErrRequired)
 				} else {
-					coords, ok := s.StationArea.Coordinates.([][][][]float64)
+					coords, ok := s.StationArea.Coordinates.([]interface{})
 					if !ok || len(coords) == 0 {
 						r.ErrorW(sliceIndexName+".station_area.coordinates", ErrInvalidValue)
 					}
@@ -122,9 +121,6 @@ func ValidateFeedStationInformation(f *gbfs.FeedStationInformation, version stri
 					}
 				}
 			}
-			// if s.IsValetStation != nil && s.IsValetStation.OldType != "" {
-			// 	r.WarningWSP(sliceIndexName+".is_valet_station", ErrInvalidType, "boolean")
-			// }
 			if s.VehicleTypeCapacity != nil {
 				if len(s.VehicleTypeCapacity) == 0 {
 					r.ErrorW(sliceIndexName+".vehicle_type_capacity", ErrInvalidValue)

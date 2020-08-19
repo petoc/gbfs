@@ -41,9 +41,13 @@ func ValidateFeedGeofencingZones(f *gbfs.FeedGeofencingZones, version string) *R
 		} else {
 			if s.Geometry.Type != "MultiPolygon" {
 				r.ErrorWSP(sliceIndexName+".geometry.type", ErrInvalidType, "MultiPolygon")
-			}
-			if s.Geometry.Coordinates == nil {
+			} else if s.Geometry.Coordinates == nil {
 				r.ErrorW(sliceIndexName+".geometry.coordinates", ErrRequired)
+			} else {
+				coords, ok := s.Geometry.Coordinates.([]interface{})
+				if !ok || len(coords) == 0 {
+					r.ErrorW(sliceIndexName+".geometry.coordinates", ErrInvalidValue)
+				}
 			}
 		}
 		if s.Properties == nil {

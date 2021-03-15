@@ -44,7 +44,7 @@ func ValidateFeedGeofencingZones(f *gbfs.FeedGeofencingZones, version string) *R
 			} else if s.Geometry.Coordinates == nil {
 				r.ErrorW(sliceIndexName+".geometry.coordinates", ErrRequired)
 			} else {
-				coords, ok := s.Geometry.Coordinates.([]interface{})
+				coords, ok := s.Geometry.Coordinates.([][][][]float64)
 				if !ok || len(coords) == 0 {
 					r.ErrorW(sliceIndexName+".geometry.coordinates", ErrInvalidValue)
 				}

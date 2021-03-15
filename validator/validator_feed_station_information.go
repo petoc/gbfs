@@ -1,6 +1,8 @@
 package validator
 
-import "github.com/petoc/gbfs"
+import (
+	"github.com/petoc/gbfs"
+)
 
 // ValidateFeedStationInformation ...
 func ValidateFeedStationInformation(f *gbfs.FeedStationInformation, version string) *Result {
@@ -100,7 +102,7 @@ func ValidateFeedStationInformation(f *gbfs.FeedStationInformation, version stri
 				} else if s.StationArea.Coordinates == nil {
 					r.ErrorW(sliceIndexName+".station_area.coordinates", ErrRequired)
 				} else {
-					coords, ok := s.StationArea.Coordinates.([]interface{})
+					coords, ok := s.StationArea.Coordinates.([][][][]float64)
 					if !ok || len(coords) == 0 {
 						r.ErrorW(sliceIndexName+".station_area.coordinates", ErrInvalidValue)
 					}

@@ -58,13 +58,30 @@ func ValidateFeedStationStatus(f *gbfs.FeedStationStatus, version string) *Resul
 			r.ErrorWSP(sliceIndexName+".last_reported", ErrInvalidValue, "POSIX time")
 		}
 		if verLT(version, gbfs.V21) {
+			if s.VehicleTypesAvailable != nil {
+				r.InfoWV(sliceIndexName+".vehicle_types_available", ErrAvailableFromVersion, gbfs.V21)
+			}
 			if s.VehicleDocksAvailable != nil {
 				r.InfoWV(sliceIndexName+".vehicle_docks_available", ErrAvailableFromVersion, gbfs.V21)
 			}
-			if s.Vehicles != nil {
-				r.InfoWV(sliceIndexName+".vehicles", ErrAvailableFromVersion, gbfs.V21)
-			}
 		} else {
+			if s.VehicleTypesAvailable != nil && len(s.VehicleTypesAvailable) > 0 {
+				for j, vtype := range s.VehicleTypesAvailable {
+					indexName := sliceIndexN(sliceIndexName+".vehicle_types_available", j)
+					if nilOrEmpty(vtype) {
+						r.ErrorW(indexName, ErrInvalidValue)
+						continue
+					}
+					if vtype.VehicleTypeID == nil || *vtype.VehicleTypeID == "" {
+						r.ErrorW(indexName+".vehicle_type_id", ErrRequired)
+					}
+					if vtype.Count == nil {
+						r.ErrorW(indexName+".count", ErrRequired)
+					} else if *vtype.Count < 0 {
+						r.ErrorW(indexName+".count", ErrInvalidValue)
+					}
+				}
+			}
 			if s.VehicleDocksAvailable != nil && len(s.VehicleDocksAvailable) > 0 {
 				for j, dock := range s.VehicleDocksAvailable {
 					dockIndexName := sliceIndexN(sliceIndexName+".vehicle_docks_available", j)
@@ -87,34 +104,6 @@ func ValidateFeedStationStatus(f *gbfs.FeedStationStatus, version string) *Resul
 						r.ErrorW(dockIndexName+".count", ErrRequired)
 					} else if *dock.Count < 0 {
 						r.ErrorW(dockIndexName+".count", ErrInvalidValue)
-					}
-				}
-			}
-			if s.Vehicles != nil && len(s.Vehicles) > 0 {
-				for j, vehicle := range s.Vehicles {
-					vehicleIndexName := sliceIndexN(sliceIndexName+".vehicles", j)
-					if nilOrEmpty(vehicle) {
-						r.ErrorW(vehicleIndexName, ErrInvalidValue)
-						continue
-					}
-					if vehicle.BikeID == nil {
-						r.ErrorW(vehicleIndexName+".bike_id", ErrRequired)
-					} else if *vehicle.BikeID == "" {
-						r.ErrorW(vehicleIndexName+".bike_id", ErrInvalidValue)
-					}
-					if vehicle.IsReserved == nil {
-						r.ErrorW(vehicleIndexName+".is_reserved", ErrRequired)
-					}
-					if vehicle.IsDisabled == nil {
-						r.ErrorW(vehicleIndexName+".is_disabled", ErrRequired)
-					}
-					if vehicle.VehicleTypeID == nil {
-						r.ErrorW(vehicleIndexName+".vehicle_type_id", ErrRequired)
-					} else if *vehicle.VehicleTypeID == "" {
-						r.ErrorW(vehicleIndexName+".vehicle_type_id", ErrInvalidValue)
-					}
-					if vehicle.CurrentRangeMeters != nil && *vehicle.CurrentRangeMeters < 0 {
-						r.ErrorW(vehicleIndexName+".current_range_meters", ErrInvalidValue)
 					}
 				}
 			}

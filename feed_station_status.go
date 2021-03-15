@@ -21,21 +21,18 @@ type (
 		IsRenting             *Boolean                        `json:"is_renting"`
 		IsReturning           *Boolean                        `json:"is_returning"`
 		LastReported          *Timestamp                      `json:"last_reported"`
+		VehicleTypesAvailable []*FeedStationStatusVehicleType `json:"vehicle_types_available,omitempty"` // conditionally required (v2.1-RC)
 		VehicleDocksAvailable []*FeedStationStatusVehicleDock `json:"vehicle_docks_available,omitempty"` // conditionally required (v2.1-RC)
-		Vehicles              []*FeedStationStatusVehicle     `json:"vehicles,omitempty"`                // conditionally required (v2.1-RC)
+	}
+	// FeedStationStatusVehicleType ...
+	FeedStationStatusVehicleType struct {
+		VehicleTypeID *ID    `json:"vehicle_type_id"` // (v2.1-RC)
+		Count         *int64 `json:"count"`           // (v2.1-RC)
 	}
 	// FeedStationStatusVehicleDock ...
 	FeedStationStatusVehicleDock struct {
 		VehicleTypeIDs []*ID  `json:"vehicle_type_ids"` // (v2.1-RC)
 		Count          *int64 `json:"count"`            // (v2.1-RC)
-	}
-	// FeedStationStatusVehicle ...
-	FeedStationStatusVehicle struct {
-		BikeID             *ID      `json:"bike_id"`                        // (v2.1-RC)
-		IsReserved         *Boolean `json:"is_reserved"`                    // (v2.1-RC)
-		IsDisabled         *Boolean `json:"is_disabled"`                    // (v2.1-RC)
-		VehicleTypeID      *ID      `json:"vehicle_type_id"`                // (v2.1-RC)
-		CurrentRangeMeters *float64 `json:"current_range_meters,omitempty"` // (v2.1-RC)
 	}
 )
 

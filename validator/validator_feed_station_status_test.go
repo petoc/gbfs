@@ -69,8 +69,9 @@ func TestValidateFeedStationStatus(t *testing.T) {
 		t.Errorf("unexpected errors %v", r.Errors)
 		return
 	}
+	station.VehicleTypesAvailable = []*gbfs.FeedStationStatusVehicleType{}
 	station.VehicleDocksAvailable = []*gbfs.FeedStationStatusVehicleDock{}
-	station.Vehicles = []*gbfs.FeedStationStatusVehicle{}
+	// station.Vehicles = []*gbfs.FeedStationStatusVehicle{}
 	r = ValidateFeedStationStatus(f, "")
 	if errorCount(r.Infos, ErrAvailableFromVersion) != 2 {
 		t.Errorf("expected 2 infos of [%s], got %v", ErrAvailableFromVersion, r.Infos)
@@ -78,6 +79,37 @@ func TestValidateFeedStationStatus(t *testing.T) {
 	}
 	r = ValidateFeedStationStatus(f, "2.1")
 	if errorCount(r.Errors, ErrInvalidValue) > 0 {
+		t.Errorf("unexpected errors %v", r.Errors)
+		return
+	}
+	vehicleType := &gbfs.FeedStationStatusVehicleType{}
+	station.VehicleTypesAvailable = []*gbfs.FeedStationStatusVehicleType{vehicleType}
+	r = ValidateFeedStationStatus(f, "2.1")
+	if errorCount(r.Errors, ErrInvalidValue) != 1 {
+		t.Errorf("expected 1 error of [%s], got %v", ErrInvalidValue, r.Errors)
+		return
+	}
+	vehicleType.VehicleTypeID = nil
+	r = ValidateFeedStationStatus(f, "2.1")
+	if errorCount(r.Errors, ErrInvalidValue) != 1 {
+		t.Errorf("expected 1 error of [%s], got %v", ErrInvalidValue, r.Errors)
+		return
+	}
+	vehicleType.Count = gbfs.NewInt64(0)
+	r = ValidateFeedStationStatus(f, "2.1")
+	if errorCount(r.Errors, ErrRequired) != 1 {
+		t.Errorf("expected 1 error of [%s], got %v", ErrRequired, r.Errors)
+		return
+	}
+	vehicleType.VehicleTypeID = gbfs.NewID("")
+	r = ValidateFeedStationStatus(f, "2.1")
+	if errorCount(r.Errors, ErrRequired) != 1 {
+		t.Errorf("expected 1 error of [%s], got %v", ErrRequired, r.Errors)
+		return
+	}
+	vehicleType.VehicleTypeID = gbfs.NewID("vehicleType1")
+	r = ValidateFeedStationStatus(f, "2.1")
+	if errorCount(r.Errors, ErrRequired) > 0 {
 		t.Errorf("unexpected errors %v", r.Errors)
 		return
 	}
@@ -106,38 +138,6 @@ func TestValidateFeedStationStatus(t *testing.T) {
 		return
 	}
 	vehicleDock.VehicleTypeIDs = []*gbfs.ID{gbfs.NewID("vehicleType1")}
-	r = ValidateFeedStationStatus(f, "2.1")
-	if errorCount(r.Errors, ErrInvalidValue) > 0 {
-		t.Errorf("unexpected errors %v", r.Errors)
-		return
-	}
-	vehicle := &gbfs.FeedStationStatusVehicle{}
-	station.Vehicles = []*gbfs.FeedStationStatusVehicle{vehicle}
-	r = ValidateFeedStationStatus(f, "2.1")
-	if errorCount(r.Errors, ErrInvalidValue) != 1 {
-		t.Errorf("expected 1 error of [%s], got %v", ErrInvalidValue, r.Errors)
-		return
-	}
-	vehicle.BikeID = gbfs.NewID("")
-	r = ValidateFeedStationStatus(f, "2.1")
-	if errorCount(r.Errors, ErrInvalidValue) != 1 {
-		t.Errorf("expected 1 error of [%s], got %v", ErrInvalidValue, r.Errors)
-		return
-	}
-	if errorCount(r.Errors, ErrRequired) != 3 {
-		t.Errorf("expected 3 errors of [%s], got %v", ErrRequired, r.Errors)
-		return
-	}
-	vehicle.BikeID = gbfs.NewID("123")
-	vehicle.IsReserved = gbfs.NewBoolean(false)
-	vehicle.IsDisabled = gbfs.NewBoolean(false)
-	vehicle.VehicleTypeID = gbfs.NewID("")
-	r = ValidateFeedStationStatus(f, "2.1")
-	if errorCount(r.Errors, ErrInvalidValue) != 1 {
-		t.Errorf("expected 1 error of [%s], got %v", ErrInvalidValue, r.Errors)
-		return
-	}
-	vehicle.VehicleTypeID = gbfs.NewID("vehicleType1")
 	r = ValidateFeedStationStatus(f, "2.1")
 	if errorCount(r.Errors, ErrInvalidValue) > 0 {
 		t.Errorf("unexpected errors %v", r.Errors)

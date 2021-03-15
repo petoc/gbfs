@@ -154,19 +154,16 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 						IsRenting:         gbfs.NewBoolean(true),
 						IsReturning:       gbfs.NewBoolean(true),
 						LastReported:      gbfs.NewTimestamp(1577836800),
+						VehicleTypesAvailable: []*gbfs.FeedStationStatusVehicleType{
+							&gbfs.FeedStationStatusVehicleType{
+								VehicleTypeID: gbfs.NewID("vehicleType1"),
+								Count:         gbfs.NewInt64(0),
+							},
+						},
 						VehicleDocksAvailable: []*gbfs.FeedStationStatusVehicleDock{
 							&gbfs.FeedStationStatusVehicleDock{
 								VehicleTypeIDs: []*gbfs.ID{gbfs.NewID("vehicleType1")},
 								Count:          gbfs.NewInt64(0),
-							},
-						},
-						Vehicles: []*gbfs.FeedStationStatusVehicle{
-							&gbfs.FeedStationStatusVehicle{
-								BikeID:             gbfs.NewID("scooter2"),
-								IsDisabled:         gbfs.NewBoolean(false),
-								IsReserved:         gbfs.NewBoolean(false),
-								VehicleTypeID:      gbfs.NewID("vehicleType2"),
-								CurrentRangeMeters: gbfs.NewFloat64(100000),
 							},
 						},
 					},

@@ -71,7 +71,6 @@ func TestValidateFeedStationStatus(t *testing.T) {
 	}
 	station.VehicleTypesAvailable = []*gbfs.FeedStationStatusVehicleType{}
 	station.VehicleDocksAvailable = []*gbfs.FeedStationStatusVehicleDock{}
-	// station.Vehicles = []*gbfs.FeedStationStatusVehicle{}
 	r = ValidateFeedStationStatus(f, "")
 	if errorCount(r.Infos, ErrAvailableFromVersion) != 2 {
 		t.Errorf("expected 2 infos of [%s], got %v", ErrAvailableFromVersion, r.Infos)

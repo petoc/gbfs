@@ -137,13 +137,16 @@ func (c *Client) Get(feed Feed) error {
 	if language == "" {
 		language = c.Options.DefaultLanguage
 	}
+	if language == "" {
+		return NewError(feed.Name()+": ", ErrInvalidLanguage)
+	}
 	var url string
 	if feed.Name() != FeedNameGbfs {
 		l, ok := gbfsFeed.Data[language]
 		if !ok {
 			l, ok = gbfsFeed.Data[c.Options.DefaultLanguage]
 			if !ok {
-				return ErrInvalidLanguage
+				return NewError(feed.Name()+": ", ErrInvalidLanguage)
 			}
 		}
 		for _, f := range l.Feeds {
@@ -155,9 +158,12 @@ func (c *Client) Get(feed Feed) error {
 	} else {
 		url = c.Options.AutoDiscoveryURL
 	}
+	if url == "" {
+		return NewError(feed.Name()+": ", ErrFeedNotFound)
+	}
 	err = c.GetURL(url, feed)
 	if err != nil {
-		return err
+		return NewError(feed.Name()+": ", err)
 	}
 	cacheSet(c, feed)
 	return nil

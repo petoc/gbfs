@@ -138,12 +138,12 @@ func (s *Server) Start() error {
 						}
 						gbfsFeedLanguage, ok := gbfsFeed.Data[feed.GetLanguage()]
 						if !ok {
-							gbfsFeed.Data[feed.GetLanguage()] = &FeedGbfsLanguage{
+							gbfsFeedLanguage = &FeedGbfsLanguage{
 								Feeds: []*FeedGbfsFeed{},
 							}
+							gbfsFeed.Data[feed.GetLanguage()] = gbfsFeedLanguage
 						}
-						gbfsFeedLanguage, ok = gbfsFeed.Data[feed.GetLanguage()]
-						if ok {
+						if gbfsFeedLanguage != nil && gbfsFeedLanguage.Feeds != nil {
 							gbfsFeedLanguage.Feeds = append(gbfsFeedLanguage.Feeds, &FeedGbfsFeed{
 								Name: NewString(feed.Name()),
 								URL:  NewString(strings.Join(append([]string{strings.Trim(s.Options.BaseURL, "/")}, pathSegments...), "/")),

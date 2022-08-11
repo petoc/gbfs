@@ -12,17 +12,20 @@ type (
 	}
 	// FeedStationStatusStation ...
 	FeedStationStatusStation struct {
-		StationID             *ID                             `json:"station_id"`
-		NumBikesAvailable     *int64                          `json:"num_bikes_available"`
-		NumBikesDisabled      *int64                          `json:"num_bikes_disabled,omitempty"`
-		NumDocksAvailable     *int64                          `json:"num_docks_available,omitempty"` // conditionally required (v2.0)
-		NumDocksDisabled      *int64                          `json:"num_docks_disabled,omitempty"`
-		IsInstalled           *Boolean                        `json:"is_installed"`
-		IsRenting             *Boolean                        `json:"is_renting"`
-		IsReturning           *Boolean                        `json:"is_returning"`
-		LastReported          *Timestamp                      `json:"last_reported"`
-		VehicleTypesAvailable []*FeedStationStatusVehicleType `json:"vehicle_types_available,omitempty"` // conditionally required (v2.1-RC)
-		VehicleDocksAvailable []*FeedStationStatusVehicleDock `json:"vehicle_docks_available,omitempty"` // conditionally required (v2.1-RC)
+		StationID              *ID                             `json:"station_id"`
+		NumBikesAvailable      *int64                          `json:"num_bikes_available"`
+		NumBikesDisabled       *int64                          `json:"num_bikes_disabled,omitempty"`
+		NumEBikesAvailable     *int64                          `json:"num_ebikes_available,omitempty"`     // Citibike/Baywheels extension
+		NumScootersAvailable   *int64                          `json:"num_scooters_available,omitempty"`   // Baywheels extension
+		NumScootersUnavailable *int64                          `json:"num_scooters_unavailable,omitempty"` // Baywheels extension
+		NumDocksAvailable      *int64                          `json:"num_docks_available,omitempty"`      // conditionally required (v2.0)
+		NumDocksDisabled       *int64                          `json:"num_docks_disabled,omitempty"`
+		IsInstalled            *Boolean                        `json:"is_installed"`
+		IsRenting              *Boolean                        `json:"is_renting"`
+		IsReturning            *Boolean                        `json:"is_returning"`
+		LastReported           *Timestamp                      `json:"last_reported"`
+		VehicleTypesAvailable  []*FeedStationStatusVehicleType `json:"vehicle_types_available,omitempty"` // conditionally required (v2.1-RC)
+		VehicleDocksAvailable  []*FeedStationStatusVehicleDock `json:"vehicle_docks_available,omitempty"` // conditionally required (v2.1-RC)
 	}
 	// FeedStationStatusVehicleType ...
 	FeedStationStatusVehicleType struct {

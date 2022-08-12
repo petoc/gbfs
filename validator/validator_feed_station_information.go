@@ -102,8 +102,7 @@ func ValidateFeedStationInformation(f *gbfs.FeedStationInformation, version stri
 				} else if s.StationArea.Coordinates == nil {
 					r.ErrorW(sliceIndexName+".station_area.coordinates", ErrRequired)
 				} else {
-					coords, ok := s.StationArea.Coordinates.([][][][]float64)
-					if !ok || len(coords) == 0 {
+					if !validateCoordinatesMultiPolygon(s.StationArea.Coordinates) {
 						r.ErrorW(sliceIndexName+".station_area.coordinates", ErrInvalidValue)
 					}
 				}
@@ -113,12 +112,12 @@ func ValidateFeedStationInformation(f *gbfs.FeedStationInformation, version stri
 					r.ErrorW(sliceIndexName+".vehicle_capacity", ErrInvalidValue)
 				} else {
 					for vehicleTypeID, c := range s.VehicleCapacity {
-						if vehicleTypeID == nil || *vehicleTypeID == "" {
+						if vehicleTypeID == "" {
 							r.ErrorW(sliceIndexName+".vehicle_capacity: vehicleTypeID key", ErrInvalidValue)
 							continue
 						}
 						if c < 0 {
-							r.ErrorW(sliceIndexName+".vehicle_capacity["+string(*vehicleTypeID)+"]", ErrInvalidValue)
+							r.ErrorW(sliceIndexName+".vehicle_capacity["+string(vehicleTypeID)+"]", ErrInvalidValue)
 						}
 					}
 				}
@@ -128,12 +127,12 @@ func ValidateFeedStationInformation(f *gbfs.FeedStationInformation, version stri
 					r.ErrorW(sliceIndexName+".vehicle_type_capacity", ErrInvalidValue)
 				} else {
 					for vehicleTypeID, c := range s.VehicleTypeCapacity {
-						if vehicleTypeID == nil || *vehicleTypeID == "" {
+						if vehicleTypeID == "" {
 							r.ErrorW(sliceIndexName+".vehicle_type_capacity: vehicleTypeID key", ErrInvalidValue)
 							continue
 						}
 						if c < 0 {
-							r.ErrorW(sliceIndexName+".vehicle_type_capacity["+string(*vehicleTypeID)+"]", ErrInvalidValue)
+							r.ErrorW(sliceIndexName+".vehicle_type_capacity["+string(vehicleTypeID)+"]", ErrInvalidValue)
 						}
 					}
 				}

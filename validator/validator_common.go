@@ -328,6 +328,37 @@ func validateLongitude(v *float64) bool {
 	return *v >= -180 && *v <= 180
 }
 
+func validateCoordinates(v interface{}, d int) bool {
+	if d > 0 {
+		min := 1
+		if d == 1 {
+			min = 2
+		}
+		cg, ok := v.([]interface{})
+		if !ok || len(cg) < min {
+			return false
+		}
+		d--
+		for _, c := range cg {
+			r := validateCoordinates(c, d)
+			if !r {
+				return false
+			}
+		}
+		return true
+	}
+	_, ok := v.(float64)
+	return ok
+}
+
+func validateCoordinatesMultiPolygon(v interface{}) bool {
+	if !validateCoordinates(v, 4) {
+		_, ok := v.([][][][]float64)
+		return ok
+	}
+	return true
+}
+
 func verEQ(v1, v2 string) bool {
 	return v1 == v2
 }

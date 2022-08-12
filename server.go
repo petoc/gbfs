@@ -133,6 +133,7 @@ func (s *Server) Start() error {
 						continue
 					}
 					if !gbfsGenerated && feed.Name() != FeedNameGbfs {
+						gbfsFeed.Lock()
 						if gbfsFeed.Data == nil {
 							gbfsFeed.Data = make(map[string]*FeedGbfsLanguage)
 						}
@@ -149,6 +150,7 @@ func (s *Server) Start() error {
 								URL:  NewString(strings.Join(append([]string{strings.Trim(s.Options.BaseURL, "/")}, pathSegments...), "/")),
 							})
 						}
+						gbfsFeed.Unlock()
 					}
 				}
 				if !gbfsGenerated {

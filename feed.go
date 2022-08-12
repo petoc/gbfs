@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -25,6 +26,7 @@ type (
 	}
 	// FeedCommon ...
 	FeedCommon struct {
+		sync.RWMutex
 		Language    *string     `json:"-"` // Unofficial helper parameter
 		LastUpdated *Timestamp  `json:"last_updated"`
 		TTL         *int        `json:"ttl"`

@@ -64,6 +64,7 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 								FormFactor:     gbfs.NewString(gbfs.FormFactorMoped),
 								PropulsionType: gbfs.NewString(gbfs.PropulsionTypeElectric),
 								Name:           gbfs.NewString("Skúter"),
+								MaxRangeMeters: gbfs.NewFloat64(100000),
 							},
 						},
 					},
@@ -108,6 +109,8 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 					},
 					nil,
 				)
+				vehicleType1ID := gbfs.NewID("vehicleType1")
+				vehicleType2ID := gbfs.NewID("vehicleType2")
 				feedSK := &gbfs.FeedStationInformation{
 					Data: &gbfs.FeedStationInformationData{
 						Stations: []*gbfs.FeedStationInformationStation{
@@ -118,6 +121,14 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 								Lon:         gbfs.NewCoordinate(21.1234),
 								Address:     gbfs.NewString("Ulica 123"),
 								StationArea: stationArea,
+								VehicleCapacity: map[gbfs.ID]int64{
+									*vehicleType1ID: 1,
+									*vehicleType2ID: 2,
+								},
+								VehicleTypeCapacity: map[gbfs.ID]int64{
+									*vehicleType1ID: 3,
+									*vehicleType2ID: 4,
+								},
 							},
 						},
 					},
@@ -133,6 +144,14 @@ func getFeedHandlers(db *sql.DB) []*gbfs.FeedHandler {
 								Lon:         gbfs.NewCoordinate(21.1234),
 								Address:     gbfs.NewString("Street 123"),
 								StationArea: stationArea,
+								VehicleCapacity: map[gbfs.ID]int64{
+									*vehicleType1ID: 1,
+									*vehicleType2ID: 2,
+								},
+								VehicleTypeCapacity: map[gbfs.ID]int64{
+									*vehicleType1ID: 3,
+									*vehicleType2ID: 4,
+								},
 							},
 						},
 					},

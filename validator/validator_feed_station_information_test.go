@@ -135,9 +135,9 @@ func TestValidateFeedStationInformation(t *testing.T) {
 	}
 	station.IsVirtualStation = gbfs.NewBoolean(false)
 	station.StationArea = gbfs.NewGeoJSONGeometryMultiPolygon(nil, nil)
-	station.VehicleCapacity = map[*gbfs.ID]int64{}
+	station.VehicleCapacity = map[gbfs.ID]int64{}
 	station.IsValetStation = gbfs.NewBoolean(false)
-	station.VehicleTypeCapacity = map[*gbfs.ID]int64{}
+	station.VehicleTypeCapacity = map[gbfs.ID]int64{}
 	r = ValidateFeedStationInformation(f, "1.1")
 	if errorCount(r.Infos, ErrAvailableFromVersion) != 5 {
 		t.Errorf("expected 5 infos of [%s], got %v", ErrAvailableFromVersion, r.Infos)
@@ -172,33 +172,33 @@ func TestValidateFeedStationInformation(t *testing.T) {
 		},
 		nil,
 	)
-	station.VehicleCapacity = map[*gbfs.ID]int64{
-		gbfs.NewID(""): 0,
+	station.VehicleCapacity = map[gbfs.ID]int64{
+		*gbfs.NewID(""): 0,
 	}
-	station.VehicleTypeCapacity = map[*gbfs.ID]int64{
-		gbfs.NewID(""): 0,
-	}
-	r = ValidateFeedStationInformation(f, "2.1")
-	if errorCount(r.Errors, ErrInvalidValue) != 2 {
-		t.Errorf("expected 2 errors of [%s], got %v", ErrInvalidValue, r.Errors)
-		return
-	}
-	station.VehicleCapacity = map[*gbfs.ID]int64{
-		gbfs.NewID("vehicleType1"): -1,
-	}
-	station.VehicleTypeCapacity = map[*gbfs.ID]int64{
-		gbfs.NewID("vehicleType1"): -1,
+	station.VehicleTypeCapacity = map[gbfs.ID]int64{
+		*gbfs.NewID(""): 0,
 	}
 	r = ValidateFeedStationInformation(f, "2.1")
 	if errorCount(r.Errors, ErrInvalidValue) != 2 {
 		t.Errorf("expected 2 errors of [%s], got %v", ErrInvalidValue, r.Errors)
 		return
 	}
-	station.VehicleCapacity = map[*gbfs.ID]int64{
-		gbfs.NewID("vehicleType1"): 0,
+	station.VehicleCapacity = map[gbfs.ID]int64{
+		*gbfs.NewID("vehicleType1"): -1,
 	}
-	station.VehicleTypeCapacity = map[*gbfs.ID]int64{
-		gbfs.NewID("vehicleType1"): 0,
+	station.VehicleTypeCapacity = map[gbfs.ID]int64{
+		*gbfs.NewID("vehicleType1"): -1,
+	}
+	r = ValidateFeedStationInformation(f, "2.1")
+	if errorCount(r.Errors, ErrInvalidValue) != 2 {
+		t.Errorf("expected 2 errors of [%s], got %v", ErrInvalidValue, r.Errors)
+		return
+	}
+	station.VehicleCapacity = map[gbfs.ID]int64{
+		*gbfs.NewID("vehicleType1"): 0,
+	}
+	station.VehicleTypeCapacity = map[gbfs.ID]int64{
+		*gbfs.NewID("vehicleType1"): 0,
 	}
 	r = ValidateFeedStationInformation(f, "2.1")
 	if errorCount(r.Errors, ErrInvalidValue) != 0 {

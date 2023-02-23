@@ -116,11 +116,12 @@ func (c *Client) GetURL(url string, feed Feed) error {
 
 // Get ...
 func (c *Client) Get(feed Feed) error {
-	cached, err := cacheGet(c, feed)
+	cached, _ := cacheGet(c, feed)
 	if cached != nil {
 		cloneValue(cached, feed)
 		return nil
 	}
+	var err error
 	var gbfsFeed *FeedGbfs
 	tmp, ok := c.cache.Get(FeedNameGbfs)
 	if ok {

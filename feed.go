@@ -428,12 +428,12 @@ func FeedStruct(name string) Feed {
 }
 
 // Name ...
-func (s FeedCommon) Name() string {
+func (s *FeedCommon) Name() string {
 	return ""
 }
 
 // GetLanguage ...
-func (s FeedCommon) GetLanguage() string {
+func (s *FeedCommon) GetLanguage() string {
 	if s.Language == nil {
 		return ""
 	}
@@ -447,7 +447,7 @@ func (s *FeedCommon) SetLanguage(v string) Feed {
 }
 
 // GetLastUpdated ...
-func (s FeedCommon) GetLastUpdated() Timestamp {
+func (s *FeedCommon) GetLastUpdated() Timestamp {
 	if s.LastUpdated == nil {
 		return Timestamp(0)
 	}
@@ -461,7 +461,7 @@ func (s *FeedCommon) SetLastUpdated(v Timestamp) Feed {
 }
 
 // GetTTL ...
-func (s FeedCommon) GetTTL() int {
+func (s *FeedCommon) GetTTL() int {
 	if s.TTL == nil {
 		return 0
 	}
@@ -475,7 +475,7 @@ func (s *FeedCommon) SetTTL(v int) Feed {
 }
 
 // GetVersion ...
-func (s FeedCommon) GetVersion() string {
+func (s *FeedCommon) GetVersion() string {
 	if s.Version == nil {
 		return ""
 	}
@@ -489,7 +489,7 @@ func (s *FeedCommon) SetVersion(v string) Feed {
 }
 
 // GetData ...
-func (s FeedCommon) GetData() interface{} {
+func (s *FeedCommon) GetData() interface{} {
 	return s.Data
 }
 
@@ -500,7 +500,7 @@ func (s *FeedCommon) SetData(v interface{}) Feed {
 }
 
 // Expired ...
-func (s FeedCommon) Expired() bool {
+func (s *FeedCommon) Expired() bool {
 	if s.TTL == nil || *s.TTL == 0 {
 		return false
 	}

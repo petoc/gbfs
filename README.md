@@ -1,6 +1,6 @@
 # GBFS
 
-Go implementation of client, server and validator for GBFS (General Bikeshare Feed Specification).
+Go implementation of client, server for GBFS (General Bikeshare Feed Specification).
 
 ## Usage
 
@@ -100,29 +100,6 @@ if err != nil {
     log.Fatal(err)
 }
 log.Fatal(fs.ListenAndServe())
-```
-
-### Validator
-
-Validator validates feeds for common issues, such as missing required fields, invalid values, mutually exclusive fields, and so on. Validation result contains parsed feed in `Feed` struct and slices of `Infos`, `Warnings` and `Errors`. Important validation issues will be in `Errors`. `Warnings` usually comply with specification, but should be considered in order to be consistent with most of providers. `Infos` contains just notes, such as usage of field officialy available from newer versions of specification.
-
-Not all invalid type issues will be reported, only common ones like coordinates or prices as strings, instead of float. Other uncommon type issues will prevent feed from being parsed. In such cases, some reasonable error should be returned from client.
-
-```go
-import "github.com/petoc/gbfs/validator"
-```
-
-```go
-f := &gbfs.FeedSystemInformation{}
-err := c.Get(f)
-if err != nil {
-    log.Fatal(err)
-}
-v := validator.New()
-r := v.Validate(f, gbfs.V10)
-log.Printf("infos=%v", r.Infos)
-log.Printf("warnings=%v", r.Warnings)
-log.Printf("errors=%v", r.Errors)
 ```
 
 ## License

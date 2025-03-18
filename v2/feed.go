@@ -209,7 +209,6 @@ const (
 	V11 string = "1.1"
 	V20 string = "2.0"
 	V21 string = "2.1"
-	V30 string = "3.0"
 
 	FeedNameGbfs               = "gbfs"
 	FeedNameGbfsVersions       = "gbfs_versions"
